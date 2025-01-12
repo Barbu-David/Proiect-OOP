@@ -62,6 +62,23 @@ void Display::DrawBackTexture(bool& flag) {
 
 }
 
+void Display::DrawAddButton(bool& flag, std::string text, float currentY ) {
+
+	float boxPadding=10, boxHeight=60;
+        Rectangle addRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
+
+        DrawRectangleRec(addRect, LIGHTGRAY);
+        DrawRectangleLinesEx(addRect, 2, DARKGRAY);
+
+        float addTextStartX = startX + boxPadding;
+        float addTextStartY = currentY + boxPadding;
+	DrawTextEx(GetFontDefault(), text.c_str(), {addTextStartX, addTextStartY}, 24, 2, BLACK);
+
+	if (CheckCollisionPointRec(GetMousePosition(), addRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) 
+		flag=true;  
+
+}
+
 void Display::RenderWorkoutList() {
 
 	double kg_param=current_user->get_kg();	
@@ -113,33 +130,13 @@ void Display::RenderWorkoutList() {
 		currentY += boxHeight + boxSpacing;
 	}
 
-	// ---- ADD "Add Workout" BUTTON ----
-	// Define the rectangle for the "Add User" button
-	Rectangle addWorkoutRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
-
-	// Draw the "Add User" rectangle
-	DrawRectangleRec(addWorkoutRect, LIGHTGRAY);
-	DrawRectangleLinesEx(addWorkoutRect, 2, DARKGRAY);
-
-	// Draw the "Add User" text
-	float addTextStartX = startX + boxPadding;
-	float addTextStartY = currentY + boxPadding;
-	DrawTextEx(GetFontDefault(), "Add workout", {addTextStartX, addTextStartY}, 24, 2, BLACK);
-
-	if (CheckCollisionPointRec(GetMousePosition(), addWorkoutRect)) {
-		// If the mouse is inside the rectangle and clicked
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			workout_box=true;
-		}
-	}   
-
+	DrawAddButton(workout_box, "Add workout", currentY);
 	if(workout_box) DrawWorkoutInputBox(s1);
-
 
 }
 
 void Display::RenderExerciseList() {
-	
+
 	std::string workout_name=current_workout->name;
 	std::vector<Exercise*> exercises = current_workout->exercises;
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
@@ -304,29 +301,8 @@ void Display::RenderUserList() {
 		currentY += boxHeight + spacing/2;
 	}
 
-	// ---- ADD "Add User" BUTTON ----
-	// Define the rectangle for the "Add User" button
-	Rectangle addUserRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
-
-	// Draw the "Add User" rectangle
-	DrawRectangleRec(addUserRect, LIGHTGRAY);
-	DrawRectangleLinesEx(addUserRect, 2, DARKGRAY);
-
-	// Draw the "Add User" text
-	float addTextStartX = startX + boxPadding;
-	float addTextStartY = currentY + boxPadding;
-	DrawTextEx(GetFontDefault(), "Add User", {addTextStartX, addTextStartY}, 24, 2, BLACK);
-
-	// Check if the mouse is inside the "Add User" rectangle
-	if (CheckCollisionPointRec(GetMousePosition(), addUserRect)) {
-		// If the mouse is inside the rectangle and clicked
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			user_box=true;	
-		}
-	}
-
+	DrawAddButton(user_box, "Add user", currentY);
 	if(user_box) DrawUserInputBox(s1, s2);
-
 }
 
 

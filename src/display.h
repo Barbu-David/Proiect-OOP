@@ -26,6 +26,7 @@ class Display {
 		float scrollY, spacing, startX, startY;
 		double GetWeightByExerciseName(const std::string& exercise_name);
 		void DrawBackTexture(bool& flag);
+		void DrawAddButton(bool& flag, std::string text, float currentY);
 };
 
 
