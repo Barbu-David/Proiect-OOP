@@ -35,6 +35,9 @@ Aplicația salvează **utilizatorii** și **workout-urile lor** în fișiere JSO
   - 🔧 **Make** – automatizarea procesului de compilare  
   - 🛠️ **Valgrind** – pentru detectarea erorilor de memorie  
   - 🐞 **GDB** – pentru depanare
+- Utilități: 
+  - **Vim**  -pentru editare text
+  - **Ranger** - deplasarea prin linia de comandă
 
 ---
 

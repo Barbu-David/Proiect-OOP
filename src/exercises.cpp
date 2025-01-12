@@ -32,8 +32,8 @@ double Calisthenics::get_progress() {
 void Calisthenics::update_progress() {
 	if(repetitions<max_repetitions && sets<max_sets) repetitions++;
 	else  if(sets<max_sets) {
-	sets++;
-	repetitions=0;
+		sets++;
+		repetitions=0;
 	}
 }
 
@@ -102,29 +102,29 @@ void Running::set_time(double time){
 
 
 std::string Exercise::get_name() {
-    return name;
+	return name;
 }
 
 std::string Exercise::get_description() {
-    return description;
+	return description;
 }
 
 Texture2D Exercise::get_photo() {
-    return photo;
+	return photo;
 }
 
 Exercise::Exercise(const Exercise &other) {
-    this->name = other.name;
-    this->description = other.description;
-    this->photo = other.photo;
-    this->type=other.type;
+	this->name = other.name;
+	this->description = other.description;
+	this->photo = other.photo;
+	this->type=other.type;
 }
 
 Calisthenics::Calisthenics(const Calisthenics &other) : Exercise(other) {
-    this->repetitions = other.repetitions;
-    this->sets = other.sets;
-    this->calories_per_rep = other.calories_per_rep;
-    this->muscle_group = other.muscle_group;
+	this->repetitions = other.repetitions;
+	this->sets = other.sets;
+	this->calories_per_rep = other.calories_per_rep;
+	this->muscle_group = other.muscle_group;
 }
 
 Weight::Weight(const Weight &other, double nweight) : Calisthenics(other){
@@ -134,8 +134,8 @@ Weight::Weight(const Weight &other, double nweight) : Calisthenics(other){
 }
 
 Running::Running(const Running &other) : Exercise(other) {
-    this->distance = other.distance;
-    this->intensity_factor = other.intensity_factor;
+	this->distance = other.distance;
+	this->intensity_factor = other.intensity_factor;
 }
 
 int Calisthenics::get_repetitons()

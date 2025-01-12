@@ -9,47 +9,65 @@
 #include <cstring>
 
 
-Display::Display() {
-
-}
-
 std::string to_string_with_precision(double value, int precision) {
 	std::ostringstream out;
 	out << std::fixed << std::setprecision(precision) << value;
 	return out.str();
 }
 
-void Display::RenderWorkoutList(std::vector<Workout*>& workouts, float startX, float startY, float spacing, float scrollY, const std::string& username, double kg_param) {
+
+Display::Display(){
+
+        Image img3 = LoadImage("assets/ok.jpg");
+        Image img2 = LoadImage("assets/back.jpg");
+        Image img = LoadImage("assets/plus.jpg");
+        this->plus=LoadTextureFromImage(img);
+        this->back=LoadTextureFromImage(img2);
+        this->ok=LoadTextureFromImage(img3);
+        this->display_workout=true;
+        this->current_workout=nullptr;
+        this->display_user=true;
+        this->user_box=false;
+        this->workout_box=false;
+        this->fm=new FileManager("./data/exercises", "./data/workouts", "./data/users");
+	this->scrollY=0;
+	this->s1="";
+	this->s2="";
+	
+}
+
+
+void Display::RenderWorkoutList(std::vector<Workout*>& workouts, float startX, float startY, float spacing, const std::string& username, double kg_param) {
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
 	float boxPadding = 10; // Padding inside each workout's rectangle
 	float lineSpacing = 20; // Space between lines of text
 	float boxSpacing = 30; // Space between workout rectangles
 
 
-	        // Draw the "back" texture in the top-right corner
-        float backWidth = 40; // Width of the scaled "back" texture
-        float backHeight = 40; // Height of the scaled "back" texture
-        float backPosX = 780 - backWidth; // Right corner with 20px padding
-        float backPosY = 20; // 20px padding from the top
-        Rectangle backRect = {backPosX, backPosY, backWidth, backHeight};
+	// Draw the "back" texture in the top-right corner
+	float backWidth = 40; // Width of the scaled "back" texture
+	float backHeight = 40; // Height of the scaled "back" texture
+	float backPosX = 780 - backWidth; // Right corner with 20px padding
+	float backPosY = 20; // 20px padding from the top
+	Rectangle backRect = {backPosX, backPosY, backWidth, backHeight};
 
-        DrawTexturePro(
-                        back, // The "back" texture
-                        {0, 0, (float)back.width, (float)back.height}, // Source rectangle
-                        backRect, // Destination rectangle with scaling
-                        {0, 0}, // Origin (no rotation)
-                        0.0f, // Rotation (no rotation)
-                        WHITE // Tint color
-                      );
+	DrawTexturePro(
+			back, // The "back" texture
+			{0, 0, (float)back.width, (float)back.height}, // Source rectangle
+			backRect, // Destination rectangle with scaling
+			{0, 0}, // Origin (no rotation)
+			0.0f, // Rotation (no rotation)
+			WHITE // Tint color
+		      );
 
-    // Check if the mouse is inside the "back" rectangle
-    if (CheckCollisionPointRec(GetMousePosition(), backRect)) {
-        // If the mouse is inside the "back" rectangle and clicked
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            display_user = true;
-            return; // Return early to prevent further rendering
-        }
-    }
+	// Check if the mouse is inside the "back" rectangle
+	if (CheckCollisionPointRec(GetMousePosition(), backRect)) {
+		// If the mouse is inside the "back" rectangle and clicked
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			display_user = true;
+			return; // Return early to prevent further rendering
+		}
+	}
 
 
 
@@ -67,7 +85,7 @@ void Display::RenderWorkoutList(std::vector<Workout*>& workouts, float startX, f
 	if (scrollY > maxScrollY) scrollY = maxScrollY;
 
 	float boxHeight = 2 * lineSpacing + boxPadding * 2; // Box height based on text and padding
-	
+
 	for (const auto& workout : workouts) {
 		if (!workout) continue; // Skip if workout is a nullptr
 
@@ -99,32 +117,32 @@ void Display::RenderWorkoutList(std::vector<Workout*>& workouts, float startX, f
 		currentY += boxHeight + boxSpacing;
 	}
 
-	         // ---- ADD "Add Workout" BUTTON ----
-    // Define the rectangle for the "Add User" button
-    Rectangle addWorkoutRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
+	// ---- ADD "Add Workout" BUTTON ----
+	// Define the rectangle for the "Add User" button
+	Rectangle addWorkoutRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
 
-    // Draw the "Add User" rectangle
-    DrawRectangleRec(addWorkoutRect, LIGHTGRAY);
-    DrawRectangleLinesEx(addWorkoutRect, 2, DARKGRAY);
+	// Draw the "Add User" rectangle
+	DrawRectangleRec(addWorkoutRect, LIGHTGRAY);
+	DrawRectangleLinesEx(addWorkoutRect, 2, DARKGRAY);
 
-    // Draw the "Add User" text
-    float addTextStartX = startX + boxPadding;
-    float addTextStartY = currentY + boxPadding;
-    DrawTextEx(GetFontDefault(), "Add workout", {addTextStartX, addTextStartY}, 24, 2, BLACK);
+	// Draw the "Add User" text
+	float addTextStartX = startX + boxPadding;
+	float addTextStartY = currentY + boxPadding;
+	DrawTextEx(GetFontDefault(), "Add workout", {addTextStartX, addTextStartY}, 24, 2, BLACK);
 
-    if (CheckCollisionPointRec(GetMousePosition(), addWorkoutRect)) {
-        // If the mouse is inside the rectangle and clicked
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        workout_box=true;
-	}
-    }   
+	if (CheckCollisionPointRec(GetMousePosition(), addWorkoutRect)) {
+		// If the mouse is inside the rectangle and clicked
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			workout_box=true;
+		}
+	}   
 
 	if(workout_box) DrawWorkoutInputBox(s1);
 
 
 }
 
-void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float startX, float startY, float spacing, float scrollY, const std::string& workout_name ) {
+void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float startX, float startY, float spacing, const std::string& workout_name ) {
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
 	float textureWidth = 50; // Set a small width for the texture
 	float textureHeight = 50; // Set a small height for the texture
@@ -153,14 +171,14 @@ void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float 
 			WHITE // Tint color
 		      );
 
-    // Check if the mouse is inside the "back" rectangle
-    if (CheckCollisionPointRec(GetMousePosition(), backRect)) {
-        // If the mouse is inside the "back" rectangle and clicked
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            display_workout = true; 
-            return; // Return early to prevent further rendering
-        }
-    }
+	// Check if the mouse is inside the "back" rectangle
+	if (CheckCollisionPointRec(GetMousePosition(), backRect)) {
+		// If the mouse is inside the "back" rectangle and clicked
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			display_workout = true; 
+			return; // Return early to prevent further rendering
+		}
+	}
 
 	// Calculate the maximum scrollable height
 	float maxScrollY = (exercises.size() * (textureHeight + spacing)) - (GetScreenHeight() - startY);
@@ -208,11 +226,11 @@ void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float 
 				progressDetails = "Reps: " + std::to_string(calisthenics->get_repetitons()) + "/" + std::to_string(calisthenics->get_max_repetitions()) + 
 					", Sets: " + std::to_string(calisthenics->get_sets()) + "/" + std::to_string(calisthenics->get_max_sets()) +
 					", Muscle Group: " + calisthenics->get_muscle_group();
-			
 
-			if(type==ExerciseType::Weight) {
-				progressDetails=progressDetails + "Selected weight: KG: " + to_string_with_precision(GetWeightByExerciseName(calisthenics->get_name())  ,1);
-			}
+
+				if(type==ExerciseType::Weight) {
+					progressDetails=progressDetails + "Selected weight: KG: " + to_string_with_precision(GetWeightByExerciseName(calisthenics->get_name())  ,1);
+				}
 			}
 		}
 
@@ -271,7 +289,7 @@ void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float 
 	}
 }
 
-void Display::RenderUserList(std::vector<User*>& users, float startX, float startY, float spacing, float scrollY) {
+void Display::RenderUserList(std::vector<User*>& users, float startX, float startY, float spacing) {
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
 	float boxPadding = 10.0f;
 	float lineSpacing = 20.0f;
@@ -348,18 +366,20 @@ void Display::RenderUserList(std::vector<User*>& users, float startX, float star
 }
 
 
-void Display::Render(std::vector<User*>& users, float startX, float startY, float spacing, float scrollY) {
+void Display::Render(std::vector<User*>& users, float startX, float startY, float spacing) {
 	if (display_user) {
 		// Render the user list if display_user is true
-		RenderUserList(users, startX, startY, spacing, scrollY);
+		RenderUserList(users, startX, startY, spacing);
 	} else if (display_workout && current_user != nullptr) {
 		// Render the list of workouts for the selected user
-		RenderWorkoutList(current_user->workout_vector, startX, startY, spacing, scrollY, current_user->get_name(), current_user->get_kg());
+		RenderWorkoutList(current_user->workout_vector, startX, startY, spacing, current_user->get_name(), current_user->get_kg());
 	} else if (current_workout != nullptr) {
 		// Render the exercises of the current workout
-		RenderExerciseList(current_workout->exercises, startX, startY, spacing, scrollY, current_workout->name);
+		RenderExerciseList(current_workout->exercises, startX, startY, spacing, current_workout->name);
 		handleKeyPressAndSort(current_workout->exercises);
 	}
+	
+	UpdateScroll();
 }
 
 
@@ -513,7 +533,7 @@ double Display::GetWeightByExerciseName(const std::string& exercise_name) {
 }
 
 
-void Display::UpdateScroll(float& scrollY) {
+void Display::UpdateScroll() {
 	float wheelMove = GetMouseWheelMove();
 
 	if (wheelMove != 0) {

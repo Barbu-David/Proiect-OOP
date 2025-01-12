@@ -5,9 +5,9 @@
 #include <string>
 
 enum class ExerciseType {
-        Calisthenics,
-        Running,
-        Weight
+	Calisthenics,
+	Running,
+	Weight
 };
 
 class Exercise {
