@@ -1,0 +1,9 @@
+{
+    "type": "Weight",
+    "name": "Bicep Curls",
+    "description": "An isolation exercise to build bicep strength and size.",
+    "photo": "assets/weights.jpg",
+    "calories_per_rep": 0.20,
+    "muscle_group": "Arms"
+}
+

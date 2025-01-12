@@ -1,0 +1,8 @@
+{
+    "type": "Running",
+    "name": "Run",
+    "description": "A regular-paced run to maintain endurance and cardiovascular health.",
+    "photo": "assets/running.jpg",
+    "intensity_factor": 0.8
+}
+

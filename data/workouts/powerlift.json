@@ -1,0 +1,28 @@
+{
+	"workout_name": "Powerlifter's Paradise",
+		"workout_description": "A workout for those who love lifting heavy!",
+		"exercises": [
+		{
+			"type": "Weight",
+			"name": "Deadlift",
+			"max_repetitions": 5,
+			"max_sets": 5,
+			"weight": 180.0
+		},
+		{
+			"type": "Weight",
+			"name": "Bench Press",
+			"max_repetitions": 5,
+			"max_sets": 5,
+			"weight": 120.0
+		},
+		{
+			"type": "Weight",
+			"name": "Bicep Curls",
+			"max_repetitions":15,
+			"max_sets":5,
+			"weight":100.0
+		}
+	]
+}
+

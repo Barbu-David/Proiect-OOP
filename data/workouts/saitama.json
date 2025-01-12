@@ -1,0 +1,31 @@
+{
+	"workout_name": "Saitama Workout",
+		"workout_description": "The legendary workout routine of the One Punch Man.",
+		"exercises": [
+		{
+			"type": "Calisthenics",
+			"name": "Push-Ups",
+			"max_repetitions": 100,
+			"max_sets": 1
+		},
+		{
+			"type": "Calisthenics",
+			"name": "Sit-Ups",
+			"max_repetitions": 100,
+			"max_sets": 1
+		},
+		{
+			"type": "Calisthenics",
+			"name": "Squats",
+			"max_repetitions": 100,
+			"max_sets": 1
+		},
+		{
+			"type": "Running",
+			"name": "Morning Jog",
+			"max_distance": 10.0,
+			"time": 60.0
+		}
+	]
+}
+

@@ -1,0 +1,25 @@
+{
+	"workout_name": "Cardio Carnival",
+		"workout_description": "A workout that will keep your heart pumping.",
+		"exercises": [
+		{
+			"type": "Running",
+			"name": "Morning Jog",
+			"max_distance": 5.0,
+			"time": 30.0
+		},
+		{
+			"type": "Running",
+			"name": "Cycling",
+			"max_distance": 15.0,
+			"time": 45.0
+		},
+		{
+			"type": "Running",
+			"name": "Swimming",
+			"max_distance": 1.0,
+			"time": 30.0
+		}
+		]
+}
+

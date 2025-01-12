@@ -1,0 +1,9 @@
+{
+    "type": "Calisthenics",
+    "name": "Burpees",
+    "description": "A full-body exercise that combines strength and cardio for maximum calorie burn.",
+    "photo": "assets/crunch.jpg",
+    "calories_per_rep": 0.55,
+    "muscle_group": "Full Body"
+}
+

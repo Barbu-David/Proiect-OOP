@@ -1,0 +1,9 @@
+{
+    "type": "Weight",
+    "name": "Bench Press",
+    "description": "A compound exercise that targets the chest, shoulders, and triceps.",
+    "photo": "assets/weights.jpg",
+    "calories_per_rep": 0.35,
+    "muscle_group": "Upper Body"
+}
+

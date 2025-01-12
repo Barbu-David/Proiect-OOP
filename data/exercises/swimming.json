@@ -1,0 +1,8 @@
+{
+    "type": "Running",
+    "name": "Swimming",
+    "description": "A swimming workout to improve overall strength and cardio fitness.",
+    "photo": "assets/running.jpg",
+    "intensity_factor": 0.9
+}
+

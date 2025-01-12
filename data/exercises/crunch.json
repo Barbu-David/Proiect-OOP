@@ -1,0 +1,9 @@
+{
+    "type": "Calisthenics",
+    "name": "Crunches",
+    "description": "An abdominal exercise that strengthens core muscles.",
+    "photo": "assets/crunch.jpg",
+    "calories_per_rep": 0.15,
+    "muscle_group": "Core"
+}
+

@@ -1,0 +1,9 @@
+{
+    "type": "Calisthenics",
+    "name": "Push-Ups",
+    "description": "A basic exercise to build upper body strength, targeting the chest, shoulders, and triceps.",
+    "photo": "assets/crunch.jpg",
+    "calories_per_rep": 0.29,
+    "muscle_group": "Upper Body"
+}
+

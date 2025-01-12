@@ -1,0 +1,9 @@
+{
+    "type": "Calisthenics",
+    "name": "Squats",
+    "description": "A lower body exercise that strengthens the legs and glutes.",
+    "photo": "assets/crunch.jpg",
+    "calories_per_rep": 0.32,
+    "muscle_group": "Lower Body"
+}
+

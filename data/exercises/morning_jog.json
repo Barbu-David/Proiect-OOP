@@ -1,0 +1,8 @@
+{
+    "type": "Running",
+    "name": "Morning Jog",
+    "description": "A light morning jog to boost energy and improve cardio fitness.",
+    "photo": "assets/running.jpg",
+    "intensity_factor": 0.5
+}
+

@@ -1,0 +1,9 @@
+{
+    "type": "Calisthenics",
+    "name": "Lunges",
+    "description": "A lower body exercise that targets the glutes, quads, and hamstrings.",
+    "photo": "assets/crunch.jpg",
+    "calories_per_rep": 0.35,
+    "muscle_group": "Lower Body"
+}
+

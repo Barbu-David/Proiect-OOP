@@ -1,0 +1,9 @@
+{
+    "type": "Calisthenics",
+    "name": "Pull-Ups",
+    "description": "An upper-body exercise that strengthens the back, shoulders, and arms.",
+    "photo": "assets/crunch.jpg",
+    "calories_per_rep": 0.40,
+    "muscle_group": "Upper Body"
+}
+

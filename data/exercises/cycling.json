@@ -1,0 +1,8 @@
+{
+    "type": "Running",
+    "name": "Cycling",
+    "description": "A cycling session for building leg muscles and endurance.",
+    "photo": "assets/running.jpg",
+    "intensity_factor": 0.7
+}
+
