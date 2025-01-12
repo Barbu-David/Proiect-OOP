@@ -7,10 +7,11 @@
 class Display {
 	public:
 		Display();
+		void Render(); 
+	private:
 		void RenderExerciseList();
 		void RenderWorkoutList();
 		void RenderUserList();
-		void Render(); 
 
 		void UpdateScroll();
 		Workout* current_workout;

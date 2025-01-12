@@ -319,3 +319,13 @@ void FileManager::add_workout_to_user(const std::string& username, const std::st
 	output_file << user_json.dump(4); // Save with 4 spaces for indentation
 	output_file.close();
 }
+
+
+std::vector<User*> FileManager::get_user_vector(){
+	return user_vector;
+}
+
+
+std::vector<Workout*> FileManager::get_workout_vector(){
+	return workout_vector;
+}

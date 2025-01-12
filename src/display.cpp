@@ -257,7 +257,7 @@ void Display::RenderExerciseList() {
 
 void Display::RenderUserList() {
 
-	std::vector<User*> users=fm->user_vector;
+	std::vector<User*> users=fm->get_user_vector();
 
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
 	float boxPadding = 10.0f;
@@ -456,7 +456,7 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 
 
 double Display::GetWeightByExerciseName(const std::string& exercise_name) {
-	for (Workout* workout : fm->workout_vector) {
+	for (Workout* workout : fm->get_workout_vector()) {
 		for (Exercise* exercise : workout->exercises) {
 			// Dynamic cast to Weight type
 			Weight* weight_exercise = dynamic_cast<Weight*>(exercise);
