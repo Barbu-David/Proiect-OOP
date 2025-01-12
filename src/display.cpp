@@ -39,6 +39,28 @@ Display::Display(){
 
 }
 
+void Display::DrawBackTexture(bool& flag) {
+		
+	float backWidth = 40; 
+	float backHeight = 40; 
+	float backPosX = 780 - backWidth;
+	float backPosY = 20; 
+	Rectangle backRect = {backPosX, backPosY, backWidth, backHeight};
+
+	DrawTexturePro(
+			back, // The "back" texture
+			{0, 0, (float)back.width, (float)back.height}, // Source rectangle
+			backRect, // Destination rectangle with scaling
+			{0, 0}, // Origin (no rotation)
+			0.0f, // Rotation (no rotation)
+			WHITE // Tint color
+		      );
+
+	if(CheckCollisionPointRec(GetMousePosition(), backRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		flag = true;
+
+
+}
 
 void Display::RenderWorkoutList() {
 
@@ -51,33 +73,7 @@ void Display::RenderWorkoutList() {
 	float lineSpacing = 20; // Space between lines of text
 	float boxSpacing = 30; // Space between workout rectangles
 
-
-	// Draw the "back" texture in the top-right corner
-	float backWidth = 40; // Width of the scaled "back" texture
-	float backHeight = 40; // Height of the scaled "back" texture
-	float backPosX = 780 - backWidth; // Right corner with 20px padding
-	float backPosY = 20; // 20px padding from the top
-	Rectangle backRect = {backPosX, backPosY, backWidth, backHeight};
-
-	DrawTexturePro(
-			back, // The "back" texture
-			{0, 0, (float)back.width, (float)back.height}, // Source rectangle
-			backRect, // Destination rectangle with scaling
-			{0, 0}, // Origin (no rotation)
-			0.0f, // Rotation (no rotation)
-			WHITE // Tint color
-		      );
-
-	// Check if the mouse is inside the "back" rectangle
-	if (CheckCollisionPointRec(GetMousePosition(), backRect)) {
-		// If the mouse is inside the "back" rectangle and clicked
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			display_user = true;
-			return; // Return early to prevent further rendering
-		}
-	}
-
-
+	DrawBackTexture(display_user);
 
 	// Draw the username and title at the top
 	std::string title = username + "'s workouts  " +  to_string_with_precision(kg_param, 1) + " kgs";
@@ -158,32 +154,7 @@ void Display::RenderExerciseList() {
 	currentY += 40; // Add some space below the workout name before the first exercise
 
 
-	// Draw the "back" texture in the top-right corner
-	float backWidth = 40; // Width of the scaled "back" texture
-	float backHeight = 40; // Height of the scaled "back" texture
-	float backPosX = 780 - backWidth; // Right corner with 20px padding
-	float backPosY = 20; // 20px padding from the top
-	Rectangle backRect = {backPosX, backPosY, backWidth, backHeight};
-
-	DrawTexturePro(
-			back, // The "back" texture
-			{0, 0, (float)back.width, (float)back.height}, // Source rectangle
-			backRect, // Destination rectangle with scaling
-			{0, 0}, // Origin (no rotation)
-			0.0f, // Rotation (no rotation)
-			WHITE // Tint color
-		      );
-
-	// Check if the mouse is inside the "back" rectangle
-	if (CheckCollisionPointRec(GetMousePosition(), backRect)) {
-		// If the mouse is inside the "back" rectangle and clicked
-		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-			display_workout = true; 
-			return; // Return early to prevent further rendering
-		}
-	}
-
-	// Calculate the maximum scrollable height
+	DrawBackTexture(display_workout);
 
 	for (size_t i = 0; i < exercises.size(); ++i) {
 		const auto& exercise = exercises[i];

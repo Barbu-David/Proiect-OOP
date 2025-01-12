@@ -25,7 +25,7 @@ class Display {
 
 		float scrollY, spacing, startX, startY;
 		double GetWeightByExerciseName(const std::string& exercise_name);
-
+		void DrawBackTexture(bool& flag);
 };
 
 
