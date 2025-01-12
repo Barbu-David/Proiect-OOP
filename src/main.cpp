@@ -9,13 +9,13 @@ int main() {
 	
 	SetTargetFPS(60);
 
-	Display d=Display();
+	Display display=Display();
 
 	while (!WindowShouldClose()) {
 
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		d.Render(d.fm->user_vector, 0, 0, 100);
+		display.Render();
 		EndDrawing();
 	}
 

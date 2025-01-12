@@ -18,26 +18,34 @@ std::string to_string_with_precision(double value, int precision) {
 
 Display::Display(){
 
-        Image img3 = LoadImage("assets/ok.jpg");
-        Image img2 = LoadImage("assets/back.jpg");
-        Image img = LoadImage("assets/plus.jpg");
-        this->plus=LoadTextureFromImage(img);
-        this->back=LoadTextureFromImage(img2);
-        this->ok=LoadTextureFromImage(img3);
-        this->display_workout=true;
-        this->current_workout=nullptr;
-        this->display_user=true;
-        this->user_box=false;
-        this->workout_box=false;
-        this->fm=new FileManager("./data/exercises", "./data/workouts", "./data/users");
+	Image img3 = LoadImage("assets/ok.jpg");
+	Image img2 = LoadImage("assets/back.jpg");
+	Image img = LoadImage("assets/plus.jpg");
+	this->plus=LoadTextureFromImage(img);
+	this->back=LoadTextureFromImage(img2);
+	this->ok=LoadTextureFromImage(img3);
+	this->display_workout=true;
+	this->current_workout=nullptr;
+	this->display_user=true;
+	this->user_box=false;
+	this->workout_box=false;
+	this->fm=new FileManager("./data/exercises", "./data/workouts", "./data/users");
 	this->scrollY=0;
+	this->spacing=100;
 	this->s1="";
 	this->s2="";
-	
+	this->startX=0;
+	this->startY=0;
+
 }
 
 
-void Display::RenderWorkoutList(std::vector<Workout*>& workouts, float startX, float startY, float spacing, const std::string& username, double kg_param) {
+void Display::RenderWorkoutList() {
+
+	double kg_param=current_user->get_kg();	
+	std::string username=current_user->get_name();
+	std::vector<Workout*> workouts=current_user->workout_vector;
+
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
 	float boxPadding = 10; // Padding inside each workout's rectangle
 	float lineSpacing = 20; // Space between lines of text
@@ -75,14 +83,6 @@ void Display::RenderWorkoutList(std::vector<Workout*>& workouts, float startX, f
 	std::string title = username + "'s workouts  " +  to_string_with_precision(kg_param, 1) + " kgs";
 	DrawTextEx(GetFontDefault(), title.c_str(), {startX, currentY}, 28, 2, BLACK);
 	currentY += 50; // Add space below the title
-
-	// Calculate the maximum scrollable height
-	float totalHeight = workouts.size() * (2 * lineSpacing + boxPadding * 2 + boxSpacing); // Height of all workout boxes
-	float maxScrollY = totalHeight - (GetScreenHeight() - startY);
-
-	// Ensure scrollY stays within bounds
-	if (scrollY < 0) scrollY = 0;
-	if (scrollY > maxScrollY) scrollY = maxScrollY;
 
 	float boxHeight = 2 * lineSpacing + boxPadding * 2; // Box height based on text and padding
 
@@ -142,7 +142,10 @@ void Display::RenderWorkoutList(std::vector<Workout*>& workouts, float startX, f
 
 }
 
-void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float startX, float startY, float spacing, const std::string& workout_name ) {
+void Display::RenderExerciseList() {
+	
+	std::string workout_name=current_workout->name;
+	std::vector<Exercise*> exercises = current_workout->exercises;
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
 	float textureWidth = 50; // Set a small width for the texture
 	float textureHeight = 50; // Set a small height for the texture
@@ -181,11 +184,6 @@ void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float 
 	}
 
 	// Calculate the maximum scrollable height
-	float maxScrollY = (exercises.size() * (textureHeight + spacing)) - (GetScreenHeight() - startY);
-
-	// Ensure scrollY stays within bounds
-	if (scrollY < 0) scrollY = 0;
-	if (scrollY > maxScrollY) scrollY = maxScrollY;
 
 	for (size_t i = 0; i < exercises.size(); ++i) {
 		const auto& exercise = exercises[i];
@@ -289,7 +287,10 @@ void Display::RenderExerciseList(const std::vector<Exercise*>& exercises, float 
 	}
 }
 
-void Display::RenderUserList(std::vector<User*>& users, float startX, float startY, float spacing) {
+void Display::RenderUserList() {
+
+	std::vector<User*> users=fm->user_vector;
+
 	float currentY = startY - scrollY; // Adjust starting Y position based on scroll offset
 	float boxPadding = 10.0f;
 	float lineSpacing = 20.0f;
@@ -299,14 +300,6 @@ void Display::RenderUserList(std::vector<User*>& users, float startX, float star
 	std::string title = "Select user:";
 	DrawTextEx(GetFontDefault(), title.c_str(), {startX, currentY}, 28, 2, BLACK);
 	currentY += 50; // Add space below the title
-
-	// Calculate the maximum scrollable height
-	float totalHeight = users.size() * (boxHeight + spacing);
-	float maxScrollY = totalHeight - (GetScreenHeight() - startY);
-
-	// Ensure scrollY stays within bounds
-	if (scrollY < 0) scrollY = 0;
-	if (scrollY > maxScrollY) scrollY = maxScrollY;
 
 	for (const auto& user : users) {
 		if (!user) continue; // Skip null pointers
@@ -366,19 +359,16 @@ void Display::RenderUserList(std::vector<User*>& users, float startX, float star
 }
 
 
-void Display::Render(std::vector<User*>& users, float startX, float startY, float spacing) {
+void Display::Render() {
 	if (display_user) {
-		// Render the user list if display_user is true
-		RenderUserList(users, startX, startY, spacing);
+		RenderUserList();
 	} else if (display_workout && current_user != nullptr) {
-		// Render the list of workouts for the selected user
-		RenderWorkoutList(current_user->workout_vector, startX, startY, spacing, current_user->get_name(), current_user->get_kg());
+		RenderWorkoutList();
 	} else if (current_workout != nullptr) {
-		// Render the exercises of the current workout
-		RenderExerciseList(current_workout->exercises, startX, startY, spacing, current_workout->name);
+		RenderExerciseList();
 		handleKeyPressAndSort(current_workout->exercises);
 	}
-	
+
 	UpdateScroll();
 }
 
