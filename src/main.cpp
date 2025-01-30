@@ -1,4 +1,3 @@
-#include"file_manager.h"
 #include"display.h"
 
 int main() {

@@ -22,12 +22,12 @@ class FileManager {
 		void add_workout_to_user(const std::string& username, const std::string& workout_name);
 	private:
 		FilePathList exercise_files, workout_files, user_files;
-		std::vector<Exercise*> exercise_vector;
 		Exercise* exercise_from_json(json j);
 		const char* workouts_directory;	
 		const char* users_directory;
 		std::vector<User*> user_vector;
 		std::vector<Workout*> workout_vector;
+		std::vector<Exercise*> exercise_vector;
 };
 
 ExerciseType exercise_type_from_string(const std::string& type_str);
