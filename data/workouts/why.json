@@ -3,32 +3,27 @@
 		"workout_description": "Designed to make you question your life choices.",
 		"exercises": [
 		{
-			"type": "Weight",
 			"name": "Deadlift",
 			"max_repetitions": 10,
 			"max_sets": 3,
 			"weight": 200.0
 		},
 		{
-			"type": "Calisthenics",
 			"name": "Burpees",
 			"max_repetitions": 25,
 			"max_sets": 4
 		},
 		{
-			"type": "Running",
 			"name": "Run",
 			"max_distance": 5.0,
 			"time": 15.0
 		},
 		{
-			"type": "Calisthenics",
 			"name": "Pull-Ups",
 			"max_repetitions": 15,
 			"max_sets": 3
 		},
 		{
-			"type": "Running",
 			"name": "Swimming",
 			"max_distance": 1.5,
 			"time": 40.0

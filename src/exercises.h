@@ -22,7 +22,7 @@ class Exercise {
 		virtual void update_progress() = 0;
 		virtual double calculate_calories(double user_kg) = 0;
 		virtual double calculate_calories_max(double user_kg) = 0;
-
+		ExerciseType get_type();
 	protected:
 		std::string name;
 		std::string description;

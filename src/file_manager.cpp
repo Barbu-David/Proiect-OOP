@@ -20,22 +20,14 @@ Workout* FileManager::workout_from_json(json workout_json) {
 	std::string workout_description = workout_json["workout_description"].get<std::string>();
 	std::vector<Exercise*> new_exercises;
 	for (const auto& j : workout_json["exercises"]) {
-		
-		ExerciseType type;
-		std::string type_string = j["type"].get<std::string>();  
-		try{
-			type=exercise_type_from_string(type_string);
-		}
-		catch (const std::invalid_argument& e) {
-			std::cout<<"Error "<<e.what();
-			
-		}
+
 		std::string name = j["name"].get<std::string>();
 
 		Exercise* new_exercise = nullptr;
 
 		for (Exercise* exercise : exercise_vector) {
 			if (exercise->get_name() == name) {
+				ExerciseType type=exercise->get_type();
 				switch(type) {
 
 					case ExerciseType::Calisthenics: {

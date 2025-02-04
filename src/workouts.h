@@ -12,7 +12,6 @@ class Workout {
 	std::vector<Exercise*> exercises;	
 
 	std::string name, description;
-
 };
 
 #endif

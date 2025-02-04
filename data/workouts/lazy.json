@@ -3,19 +3,16 @@
 		"workout_description": "For when you want to feel productive without actually doing much.",
 		"exercises": [
 		{
-			"type": "Calisthenics",
 			"name": "Push-Ups",
 			"max_repetitions": 1,
 			"max_sets": 1
 		},
 		{
-			"type": "Calisthenics",
 			"name": "Crunches",
 			"max_repetitions": 1,
 			"max_sets": 1
 		},
 		{
-			"type": "Running",
 			"name": "Morning Jog",
 			"max_distance": 0.1,
 			"time": 1.0

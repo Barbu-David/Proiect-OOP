@@ -3,31 +3,26 @@
 		"workout_description": "When weights are not an option.",
 		"exercises": [
 		{
-			"type": "Calisthenics",
 			"name": "Push-Ups",
 			"max_repetitions": 20,
 			"max_sets": 4
 		},
 		{
-			"type": "Calisthenics",
 			"name": "Burpees",
 			"max_repetitions": 15,
 			"max_sets": 3
 		},
 		{
-			"type": "Calisthenics",
 			"name": "Lunges",
 			"max_repetitions": 12,
 			"max_sets": 3
 		},
 		{
-			"type": "Calisthenics",
 			"name": "Pull-Ups",
 			"max_repetitions": 10,
 			"max_sets": 3
 		},
 		{
-			"type": "Calisthenics",
 			"name": "Crunches",
 			"max_repetitions": 30,
 			"max_sets": 3

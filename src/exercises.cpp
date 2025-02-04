@@ -178,7 +178,12 @@ double Running::get_intensity_factor()
 
 double Weight::get_weight()
 {
-	return this->weight;
+	return weight;
 }
 
-Exercise::Exercise(){}
+ExerciseType Exercise::get_type() 
+{
+	return type;
+}
+
+Exercise::Exercise() {};

@@ -48,12 +48,12 @@ void Display::DrawBackTexture(bool& flag) {
 	Rectangle backRect = {backPosX, backPosY, backWidth, backHeight};
 
 	DrawTexturePro(
-			back, // The "back" texture
-			{0, 0, (float)back.width, (float)back.height}, // Source rectangle
-			backRect, // Destination rectangle with scaling
-			{0, 0}, // Origin (no rotation)
-			0.0f, // Rotation (no rotation)
-			WHITE // Tint color
+			back, 
+			{0, 0, (float)back.width, (float)back.height}, 
+			backRect, 
+			{0, 0}, 
+			0.0f, 
+			WHITE 
 		      );
 
 	if(CheckCollisionPointRec(GetMousePosition(), backRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -92,29 +92,24 @@ void Display::RenderWorkoutList() {
 
 	DrawBackTexture(display_user);
 
-	// Draw the username and title at the top
 	std::string title = username + "'s workouts  " +  to_string_with_precision(kg_param, 1) + " kgs";
 	DrawTextEx(GetFontDefault(), title.c_str(), {startX, currentY}, 28, 2, BLACK);
 	currentY += 50; 
 
-	float boxHeight = 2 * lineSpacing + boxPadding * 2; // Box height based on text and padding
+	float boxHeight = 2 * lineSpacing + boxPadding * 2; 
 
 	for (const auto& workout : workouts) {
-		if (!workout) continue; // Skip if workout is a nullptr
+		if (!workout) continue; 
 
-		// Define the rectangle for this workout
 		Rectangle workoutRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
 
-		// Draw the rectangle
 		DrawRectangleRec(workoutRect, LIGHTGRAY);
 		DrawRectangleLinesEx(workoutRect, 2, DARKGRAY);
 
-		// Draw the workout name
 		float textStartX = startX + boxPadding;
 		float textStartY = currentY + boxPadding;
 		DrawTextEx(GetFontDefault(), workout->name.c_str(), {textStartX, textStartY}, 24, 2, BLACK);
 
-		// Draw the workout description
 		DrawTextEx(GetFontDefault(), workout->description.c_str(), {textStartX, textStartY + lineSpacing}, 20, 1, DARKGRAY);
 
 		if (CheckCollisionPointRec(GetMousePosition(), workoutRect)) {
@@ -143,9 +138,8 @@ void Display::RenderExerciseList() {
 	float lineSpacing = 20; 
 
 
-	// Draw the workout name at the top
 	DrawTextEx(GetFontDefault(), workout_name.c_str(), {startX, currentY}, 28, 2, BLACK);
-	currentY += 40; // Add some space below the workout name before the first exercise
+	currentY += 40; 
 
 
 	DrawBackTexture(display_workout);
@@ -156,24 +150,21 @@ void Display::RenderExerciseList() {
 		float texturePosX = startX;
 		float texturePosY = currentY;
 
-		// Draw the texture in the scaled rectangle next to the box
 		Rectangle textureRect = {texturePosX, texturePosY, textureWidth, textureHeight};
 
 		DrawTexturePro(
-				exercise->get_photo(), // The texture
-				{0, 0, (float)exercise->get_photo().width, (float)exercise->get_photo().height}, // Source rectangle
-				textureRect, // Destination rectangle with scaling
-				{0, 0}, // Origin (no rotation)
-				0.0f, // Rotation (no rotation)
-				WHITE // Tint color
+				exercise->get_photo(), 
+				{0, 0, (float)exercise->get_photo().width, (float)exercise->get_photo().height}, 
+				textureRect, 
+				{0, 0}, 
+				0.0f, 
+				WHITE 
 			      );
 
 		float textStartX = texturePosX + textureWidth + boxPadding;
 
-		// Draw exercise name
 		DrawTextEx(GetFontDefault(), exercise->get_name().c_str(), {textStartX, currentY}, 24, 2, BLACK);
 
-		// Draw exercise description
 		DrawTextEx(GetFontDefault(), exercise->get_description().c_str(), {textStartX, currentY + lineSpacing}, 16, 1, DARKGRAY);
 
 		// Draw progress details based on the type of exercise
@@ -205,13 +196,10 @@ void Display::RenderExerciseList() {
 
 		}
 		
-		// Draw the progress details
 		DrawTextEx(GetFontDefault(), progressDetails.c_str(), {textStartX, currentY + 2 * lineSpacing}, 16, 1, BLACK);
-		// Draw Calories burned info
 		std::string caloriesDetails = "Calories burned: " + to_string_with_precision(exercise->calculate_calories(90),1) + "/" + to_string_with_precision(exercise->calculate_calories_max(90), 1);
 		DrawTextEx(GetFontDefault(), caloriesDetails.c_str(), {textStartX, currentY + 3 * lineSpacing}, 16, 1, DARKGRAY);
 
-		// Draw progress bar
 		double progress = exercise->get_progress();
 		float barWidth = 200;
 		float barHeight = 20;
@@ -304,14 +292,12 @@ void Display::Render() {
 
 void GetTextInput(std::string &buffer, int maxLength) {
 	int key;
-	// GetCharPressed reads the next pressed character in the input queue
 	while ((key = GetCharPressed()) != 0) {
 		if (key >= 32 && key <= 125 && buffer.size() <(unsigned int) maxLength - 1) {
 			buffer += (char)key;
 		}
 	}
 
-	// Handle backspace
 	if (IsKeyPressed(KEY_BACKSPACE) && !buffer.empty()) {
 		buffer.pop_back();
 	}
@@ -322,7 +308,6 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 	static bool usernameActive = false;
 	static bool weightActive = false;
 
-	// --- Overall Background ---
 	float startX = 50;
 	float startY = 100;
 	float boxWidth = GetScreenWidth() - startX * 2;
@@ -332,7 +317,6 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 	Rectangle outerBackgroundRect = {startX - 10, startY - 10, boxWidth + 20, (boxHeight + padding * 2) * 3 + 20};
 	DrawRectangleRec(outerBackgroundRect, LIGHTGRAY);  // Fill the background
 
-	// --- USERNAME FIELD ---
 	Rectangle usernameRect = {startX, startY, boxWidth, boxHeight};
 	DrawRectangleRec(usernameRect, usernameActive ? DARKGRAY : RAYWHITE);  // Highlight if active
 	DrawRectangleLinesEx(usernameRect, 2, DARKGRAY);
@@ -343,7 +327,6 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 		weightActive = false;
 	}
 
-	// --- WEIGHT FIELD ---
 	Rectangle weightRect = {startX, startY + boxHeight + padding * 2, boxWidth, boxHeight};
 	DrawRectangleRec(weightRect, weightActive ? DARKGRAY : RAYWHITE);  // Highlight if active
 	DrawRectangleLinesEx(weightRect, 2, DARKGRAY);
@@ -354,7 +337,6 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 		usernameActive = false;
 	}
 
-	// Handle text input for the active field
 	if (usernameActive) {
 		GetTextInput(username, 64);
 	}
@@ -362,7 +344,6 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 		GetTextInput(weightKg, 64);
 	}
 
-	// --- BACK BUTTON ---
 	Rectangle backRect = {startX, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
 	DrawTexturePro(back, {0, 0, (float)back.width, (float)back.height}, backRect, {0, 0}, 0.0f, WHITE);
 
@@ -373,7 +354,6 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 		return;
 	}
 
-	// --- OK BUTTON ---
 	Rectangle okRect = {(float)GetScreenWidth() - 150, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
 	DrawTexturePro(ok, {0, 0, (float)ok.width, (float)ok.height}, okRect, {0, 0}, 0.0f, WHITE);
 
@@ -386,7 +366,6 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 
 	}
 
-	// --- Outer Rectangle Border ---
 	DrawRectangleLinesEx(outerBackgroundRect, 4, DARKGRAY);  // Draw border around the UI
 }
 
@@ -399,17 +378,16 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 	float padding = 10;
 
 	Rectangle outerBackgroundRect = {startX - 10, startY - 10, boxWidth + 20, (boxHeight + padding * 2) * 3 + 20};
-	DrawRectangleRec(outerBackgroundRect, LIGHTGRAY);  // Fill the background
+	DrawRectangleRec(outerBackgroundRect, LIGHTGRAY);  
 
 	Rectangle usernameRect = {startX, startY, boxWidth, boxHeight};
-	DrawRectangleRec(usernameRect, RAYWHITE);  // Highlight if active
+	DrawRectangleRec(usernameRect, RAYWHITE); 
 	DrawRectangleLinesEx(usernameRect, 2, DARKGRAY);
 	DrawTextEx(GetFontDefault(), ("Workout: " + workoutname).c_str(), {startX + padding, startY + padding}, 24, 2, BLACK);
 
 
 	GetTextInput(workoutname, 64);
 
-	// --- BACK BUTTON ---
 	Rectangle backRect = {startX, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
 	DrawTexturePro(back, {0, 0, (float)back.width, (float)back.height}, backRect, {0, 0}, 0.0f, WHITE);
 
@@ -419,7 +397,6 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 		return;
 	}
 
-	// --- OK BUTTON ---
 	Rectangle okRect = {(float)GetScreenWidth() - 150, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
 	DrawTexturePro(ok, {0, 0, (float)ok.width, (float)ok.height}, okRect, {0, 0}, 0.0f, WHITE);
 
@@ -436,14 +413,13 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 
 	}
 
-	DrawRectangleLinesEx(outerBackgroundRect, 4, DARKGRAY);  // Draw border around the UI
+	DrawRectangleLinesEx(outerBackgroundRect, 4, DARKGRAY);  
 }
 
 
 double Display::GetWeightByExerciseName(const std::string& exercise_name) {
 	for (Workout* workout : fm->get_workout_vector()) {
 		for (Exercise* exercise : workout->exercises) {
-			// Dynamic cast to Weight type
 			Weight* weight_exercise = dynamic_cast<Weight*>(exercise);
 			if (weight_exercise && exercise->get_name() == exercise_name) {
 				return weight_exercise->get_weight();
@@ -462,10 +438,10 @@ void Display::UpdateScroll() {
 	}
 
 	if (IsKeyPressed(KEY_DOWN)) {
-		scrollY += 10; // Scroll down
+		scrollY += 10; 
 	}
 	if (IsKeyPressed(KEY_UP)) {
-		scrollY -= 10; // Scroll up
+		scrollY -= 10; 
 	}
 }
 
