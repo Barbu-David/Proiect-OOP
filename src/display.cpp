@@ -83,7 +83,7 @@ void Display::RenderWorkoutList() {
 
 	double kg_param=current_user->get_kg();	
 	std::string username=current_user->get_name();
-	std::vector<Workout*> workouts=current_user->workout_vector;
+	std::vector<Workout*> workouts=current_user->get_workout_vector();
 
 	float currentY = startY - scrollY; 
 	float boxPadding = 10; 

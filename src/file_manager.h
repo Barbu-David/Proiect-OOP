@@ -30,15 +30,19 @@ class FileManager {
 		void add_workout_to_user(const std::string& username, const std::string& workout_name);
 
 	private:
+
+	//Files
 		FilePathList exercise_files, workout_files, user_files;
 	
 		const char* workouts_directory;	
 		const char* users_directory;
 
+	//Data
 		std::vector<Exercise*> exercise_vector;
 		std::vector<User*> user_vector;
 		std::vector<Workout*> workout_vector;
 
+	//Reading
 		Exercise* exercise_from_json(json j);
 		Workout* workout_from_json(json workout_json);
 		User* user_from_json(json user_json);

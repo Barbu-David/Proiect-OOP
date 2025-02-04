@@ -36,6 +36,7 @@ FileManager::FileManager(const char* exercises_directory, const char* w_director
 }
 
 
+//Reading
 Exercise* FileManager::exercise_from_json(json j) 
 {
 	try{
@@ -43,7 +44,6 @@ Exercise* FileManager::exercise_from_json(json j)
 		ExerciseType type=helper.exercise_type_from_string(type_string);
 
 		Exercise* exercise = nullptr;
-
 		std::string name = j["name"].get<std::string>();    
 		std::string description = j["description"].get<std::string>();
 
@@ -162,7 +162,7 @@ User* FileManager::user_from_json(json user_json) {
 			}
 
 			if (matched_workout) {
-				new_user->workout_vector.push_back(new Workout(*matched_workout));
+				new_user->get_workout_vector().push_back(new Workout(*matched_workout));
 			} else {
 				std::cerr << "Workout not found: " << workout_name_str << " for user: " << user_name << std::endl;
 			}
@@ -175,6 +175,8 @@ User* FileManager::user_from_json(json user_json) {
 	}
 }
 
+//Adding
+
 void FileManager::add_user(const std::string& username, double user_kgs) {
 	json user_json;
 	user_json["name"] = username;
@@ -185,7 +187,7 @@ void FileManager::add_user(const std::string& username, double user_kgs) {
 	std::string file_path = std::string(users_directory) + "/" + username + ".json";
 	std::ofstream user_file(file_path);
 	if (user_file.is_open()) {
-		user_file << user_json.dump(4); // Write JSON with 4-space indentation
+		user_file << user_json.dump(4); 
 		user_file.close();
 	} else {
 		std::cerr << "Error creating user file: " << file_path << std::endl;
@@ -234,7 +236,7 @@ void FileManager::add_workout_to_user(const std::string& username, const std::st
 
 	Workout* workout = *workout_it;
 
-	user->workout_vector.push_back(new Workout(*workout));
+	user->get_workout_vector().push_back(new Workout(*workout));
 
 	std::ifstream input_file(user_json_path);
 	if (!input_file.is_open()) {
@@ -280,6 +282,7 @@ std::vector<Exercise*> FileManager::get_exercise_vector()
 
 
 //Helper
+
 ExerciseType FileManagerHelper::exercise_type_from_string(const std::string& type_str) 
 {
 	if(type_str=="Calisthenics")
