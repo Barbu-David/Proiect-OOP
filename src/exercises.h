@@ -13,7 +13,6 @@ enum class ExerciseType {
 class Exercise {
 	public:
 		Exercise();
-		ExerciseType type;
 		Exercise(const Exercise &other);
 		std::string get_name();
 		std::string get_description();
@@ -23,7 +22,9 @@ class Exercise {
 		virtual double calculate_calories(double user_kg) = 0;
 		virtual double calculate_calories_max(double user_kg) = 0;
 		ExerciseType get_type();
+		void set_type(ExerciseType type);
 	protected:
+		ExerciseType type;
 		std::string name;
 		std::string description;
 		Texture2D photo;

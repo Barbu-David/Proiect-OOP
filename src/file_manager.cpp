@@ -110,7 +110,7 @@ Exercise* FileManager::exercise_from_json(json j)
 						    }
 
 		}
-		exercise->type=type;
+		exercise->set_type(type);
 		return exercise;
 	} catch(const json::exception& e) {
 		std::cout<<"Error parsing json workout"<<e.what();

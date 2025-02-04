@@ -167,8 +167,7 @@ void Display::RenderExerciseList() {
 
 		DrawTextEx(GetFontDefault(), exercise->get_description().c_str(), {textStartX, currentY + lineSpacing}, 16, 1, DARKGRAY);
 
-		// Draw progress details based on the type of exercise
-		ExerciseType type = exercise->type;
+		ExerciseType type = exercise->get_type();
 		std::string progressDetails;
 
 		if (type == ExerciseType::Calisthenics || type == ExerciseType::Weight) {

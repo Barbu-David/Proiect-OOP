@@ -186,4 +186,10 @@ ExerciseType Exercise::get_type()
 	return type;
 }
 
+void Exercise::set_type(ExerciseType type) 
+{
+	this->type=type;
+}
+
+
 Exercise::Exercise() {};
