@@ -12,17 +12,26 @@ enum class ExerciseType {
 
 class Exercise {
 	public:
+	
+	//Constructors
 		Exercise();
 		Exercise(const Exercise &other);
+	
+	//Getters	
 		std::string get_name();
 		std::string get_description();
 		Texture2D get_photo();
+		ExerciseType get_type();
+	
+	//Setters
+		void set_type(ExerciseType type);
+	
+	//Virtual info functions
 		virtual double get_progress() = 0;
 		virtual void update_progress() = 0;
 		virtual double calculate_calories(double user_kg) = 0;
 		virtual double calculate_calories_max(double user_kg) = 0;
-		ExerciseType get_type();
-		void set_type(ExerciseType type);
+
 	protected:
 		ExerciseType type;
 		std::string name;
@@ -30,23 +39,61 @@ class Exercise {
 		Texture2D photo;
 };
 
-class Calisthenics : public Exercise {
+class Running : public Exercise {
 	public:
-		Calisthenics(const Calisthenics &other);
-		Calisthenics(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group);	
+
+	//Constructors
+		Running(const Running &other);
+		Running(std::string Name, std::string Description, Texture2D Photo, double intensity_factor);
+
+	//Getters
+		double get_distance();
+		double get_max_distance();
+		double get_time();
+		double get_intensity_factor();
+
+	//Setters
+		void set_distance(double distance);
+		void set_time(double time);	
+
+	//Info functions
 		double get_progress() override;
 		void update_progress() override;
-		virtual double calculate_calories(double user_kg) override;
-		virtual double calculate_calories_max(double user_kg) override;
-		void set_reps(int reps);
-		void set_sets(int sets);
+		double calculate_calories(double user_kg) override;
+		double calculate_calories_max(double user_kg) override;
+
+	private:
+		double distance, max_distance;
+		double time;
+		double intensity_factor;
+};
+
+class Calisthenics : public Exercise {
+	public:
+
+	//Constructors
+		Calisthenics(const Calisthenics &other);
+		Calisthenics(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group);	
+
+	//Getters
 		int get_repetitons();
 		int get_max_repetitions();
 		int get_sets();
 		int get_max_sets();
-		void reset_sets();
-		void reset_reps();
 		std::string get_muscle_group();	
+
+	//Setters
+		void set_reps(int reps);
+		void set_sets(int sets);
+		void reset_sets();
+		void reset_reps(); //Unfortunate naming
+
+	//Info functions
+		double get_progress() override;
+		void update_progress() override;
+		virtual double calculate_calories(double user_kg) override;
+		virtual double calculate_calories_max(double user_kg) override;
+	
 	protected:
 		int repetitions, max_repetitions;
 		int sets, max_sets;
@@ -54,37 +101,25 @@ class Calisthenics : public Exercise {
 		std::string muscle_group;
 };
 
-class Running : public Exercise {
-	public:
-		Running(const Running &other);
-		Running(std::string Name, std::string Description, Texture2D Photo, double intensity_factor);
-		void set_distance(double distance);
-		void set_time(double time);	
-		double get_progress() override;
-		void update_progress() override;
-		double calculate_calories(double user_kg) override;
-		double calculate_calories_max(double user_kg) override;
-		double get_distance();
-		double get_max_distance();
-		double get_time();
-		double get_intensity_factor();
-		void reset_distance();
-	private:
-		double distance, max_distance;
-		double time;
-		double intensity_factor;
-};
-
 class Weight : public Calisthenics {
 	public:
+	
+	//Constructors
 		Weight(const Weight &other, double nweight);
+		using Calisthenics::Calisthenics;
+
+	//Getters
+		double get_weight();
+
+	//Setters
+		void set_weight(double nweight);
+
+	//Info functions
 		double calculate_calories(double user_kg) override;
 		double calculate_calories_max(double user_kg) override;
-		using Calisthenics::Calisthenics;
-		void set_weight(double nweight);
-		double get_weight();
+
 	private:
-		double weight=0;
+		double weight;
 };
 
 #endif

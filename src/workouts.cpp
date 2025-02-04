@@ -31,7 +31,7 @@ Workout::Workout(const Workout& other)
 
 			} else if (auto* running = dynamic_cast<Running*>(exercise)) {
 				copiedExercise = new Running(*running);
-				dynamic_cast<Running*>(copiedExercise)->reset_distance(); // Reset distance
+				dynamic_cast<Running*>(copiedExercise)->set_distance(0); // Reset distance
 				dynamic_cast<Running*>(copiedExercise)->set_distance(running->get_max_distance());
 				dynamic_cast<Running*>(copiedExercise)->set_time(running->get_time());
 
