@@ -1,29 +1,6 @@
 #include "exercises.h"
 #include <iostream>
 
-double Calisthenics::calculate_calories_max( double user_kg) {
-	return max_sets * (calories_per_rep + user_kg);
-}
-
-double Running::calculate_calories_max(double user_kg)  {
-	return intensity_factor*user_kg*max_distance*(max_distance/time);
-}
-
-double Weight::calculate_calories_max(double user_kg) {
-	return max_sets * ((calories_per_rep+weight) + user_kg);
-}
-
-double Calisthenics::calculate_calories( double user_kg) {
-	return sets * (calories_per_rep + user_kg);	
-}
-
-double Running::calculate_calories(double user_kg)  {
-	return intensity_factor*user_kg*((distance/max_distance))*distance*(max_distance/time);
-}
-
-double Weight::calculate_calories(double user_kg) {
-	return sets *( (calories_per_rep+weight) + user_kg);
-}
 //Default Constructors
 
 Exercise::Exercise() {}; //why does this have to exitst??
@@ -220,4 +197,28 @@ void Calisthenics::update_progress() {
 }
 
 //Calories
+
+double Calisthenics::calculate_calories_max( double user_kg) {
+	return max_sets * (calories_per_rep + user_kg);
+}
+
+double Running::calculate_calories_max(double user_kg)  {
+	return intensity_factor*user_kg*max_distance*(max_distance/time);
+}
+
+double Weight::calculate_calories_max(double user_kg) {
+	return max_sets * ((calories_per_rep+weight) + user_kg);
+}
+
+double Calisthenics::calculate_calories( double user_kg) {
+	return sets * (calories_per_rep + user_kg);	
+}
+
+double Running::calculate_calories(double user_kg)  {
+	return intensity_factor*user_kg*((distance/max_distance))*distance*(max_distance/time);
+}
+
+double Weight::calculate_calories(double user_kg) {
+	return sets *( (calories_per_rep+weight) + user_kg);
+}
 

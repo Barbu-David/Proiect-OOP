@@ -2,16 +2,91 @@
 #include "file_manager.h"
 #include <fstream>
 
-ExerciseType exercise_type_from_string(const std::string& type_str) {
-	if (type_str == "Calisthenics") {
-		return ExerciseType::Calisthenics;
-	} else if (type_str == "Running") {
-		return ExerciseType::Running;
-	} else if (type_str == "Weight") {
-		return ExerciseType::Weight;
-	}
-	throw std::invalid_argument("Invalid ExerciseType string");
+using json = nlohmann::json;
+
+//Constructor
+FileManager::FileManager(const char* exercises_directory, const char* w_directory, const char* users_directory) 
+{
+	exercise_files=LoadDirectoryFiles(exercises_directory);
+
+	this->workouts_directory=w_directory;
+	workout_files=LoadDirectoryFiles(w_directory);
+
+	this->users_directory=users_directory;
+	user_files = LoadDirectoryFiles(users_directory);
+
+	helper.add_files_to_vector(
+			exercise_vector,
+			std::function<Exercise*(json)>([this](json j) { return this->exercise_from_json(j); }),
+			exercise_files
+			);
+
+	helper.add_files_to_vector(
+			workout_vector,
+			std::function<Workout*(json)>([this](json j) { return this->workout_from_json(j); }),
+			workout_files
+			);
+
+	helper.add_files_to_vector(
+			user_vector,
+			std::function<User*(json)>([this](json j) { return this->user_from_json(j); }),
+			user_files
+			);
+
 }
+
+
+Exercise* FileManager::exercise_from_json(json j) 
+{
+	try{
+		std::string type_string = j["type"].get<std::string>();  
+		ExerciseType type=helper.exercise_type_from_string(type_string);
+
+		Exercise* exercise = nullptr;
+
+		std::string name = j["name"].get<std::string>();    
+		std::string description = j["description"].get<std::string>();
+
+		std::string image_path = j["photo"].get<std::string>();
+		Image photo_image = LoadImage(image_path.c_str());
+		Texture2D photo = LoadTextureFromImage(photo_image);
+
+		switch(type) {
+			case ExerciseType::Calisthenics: {
+								 std::string muscle_group = j["muscle_group"].get<std::string>();
+								 double calories_per_rep = j["calories_per_rep"].get<double>();
+								 Calisthenics* calisthenics = new Calisthenics(name, description, photo, calories_per_rep, muscle_group);    
+								 exercise=calisthenics;  
+
+								 break;
+							 }
+
+			case ExerciseType::Weight: {
+							   std::string muscle_group = j["muscle_group"].get<std::string>();
+							   double calories_per_rep = j["calories_per_rep"].get<double>();
+							   Weight* weight = new Weight(name, description, photo, calories_per_rep, muscle_group);    
+							   exercise=weight;    
+							   break;
+						   }
+			case ExerciseType::Running: {
+
+
+							    double intensity_factor = j["intensity_factor"].get<double>();
+							    Running* running = new Running(name, description, photo, intensity_factor);    
+							    exercise=running;    
+							    break;
+						    }
+
+		}
+
+		exercise->set_type(type);
+		return exercise;
+	} catch(const json::exception& e) {
+		std::cout<<"Error parsing json workout"<<e.what();
+		return nullptr;
+	}
+}
+
 
 
 Workout* FileManager::workout_from_json(json workout_json) {
@@ -68,57 +143,7 @@ Workout* FileManager::workout_from_json(json workout_json) {
 	return new Workout(workout_name, workout_description, new_exercises);
 }
 
-Exercise* FileManager::exercise_from_json(json j) 
-{
-	try{
-		std::string type_string = j["type"].get<std::string>();  
-		ExerciseType type=exercise_type_from_string(type_string);
-
-		Exercise* exercise = nullptr;
-
-		std::string name = j["name"].get<std::string>();    
-		std::string description = j["description"].get<std::string>();
-
-		std::string image_path = j["photo"].get<std::string>();
-		Image photo_image = LoadImage(image_path.c_str());
-		Texture2D photo = LoadTextureFromImage(photo_image);
-
-		switch(type) {
-			case ExerciseType::Calisthenics: {
-								 std::string muscle_group = j["muscle_group"].get<std::string>();
-								 double calories_per_rep = j["calories_per_rep"].get<double>();
-								 Calisthenics* calisthenics = new Calisthenics(name, description, photo, calories_per_rep, muscle_group);    
-								 exercise=calisthenics;  
-
-								 break;
-							 }
-
-			case ExerciseType::Weight: {
-							   std::string muscle_group = j["muscle_group"].get<std::string>();
-							   double calories_per_rep = j["calories_per_rep"].get<double>();
-							   Weight* weight = new Weight(name, description, photo, calories_per_rep, muscle_group);    
-							   exercise=weight;    
-							   break;
-						   }
-			case ExerciseType::Running: {
-
-
-							    double intensity_factor = j["intensity_factor"].get<double>();
-							    Running* running = new Running(name, description, photo, intensity_factor);    
-							    exercise=running;    
-							    break;
-						    }
-
-		}
-		exercise->set_type(type);
-		return exercise;
-	} catch(const json::exception& e) {
-		std::cout<<"Error parsing json workout"<<e.what();
-		return nullptr;
-	}
-}
-
-User* FileManager::read_user_from_json(json user_json) {
+User* FileManager::user_from_json(json user_json) {
 	try {
 		std::string user_name = user_json["name"].get<std::string>();
 		double user_kg = user_json["kg"].get<double>();
@@ -150,66 +175,6 @@ User* FileManager::read_user_from_json(json user_json) {
 	}
 }
 
-FileManager::FileManager(const char* exercises_directory, const char* w_directory, const char* users_directory) 
-{
-	exercise_files=LoadDirectoryFiles(exercises_directory);
-	unsigned int index;
-	for(index=0; index<exercise_files.count; index++) {
-		std::ifstream file(exercise_files.paths[index]);
-		if (file.is_open()) {
-			std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-			try {
-				nlohmann::json j = nlohmann::json::parse(file_content);
-
-				exercise_vector.push_back(exercise_from_json(j));
-			} catch (const nlohmann::json::exception& e) {
-				std::cerr << "Error parsing JSON from file: " << exercise_files.paths[index] << "\n" << e.what() << std::endl;
-			}
-		} else {
-			std::cerr << "Error opening file: " << exercise_files.paths[index] << std::endl;
-		}
-	}
-
-	workouts_directory=w_directory;
-	workout_files=LoadDirectoryFiles(w_directory);
-	for(index=0; index<workout_files.count; index++) {
-		std::ifstream file1(workout_files.paths[index]);
-		if (file1.is_open()) {
-			std::string file_content1((std::istreambuf_iterator<char>(file1)), std::istreambuf_iterator<char>());
-			try {
-				nlohmann::json j1 = nlohmann::json::parse(file_content1);
-
-				workout_vector.push_back(workout_from_json(j1));
-			} catch (const nlohmann::json::exception& e1) {
-				std::cerr << "Error parsing JSON from workout file: " << workout_files.paths[index] << "\n" << e1.what() << std::endl;
-			}
-		} else {
-			std::cerr << "Error opening file: " << workout_files.paths[index] << std::endl;
-		}
-	}
-
-
-	user_files = LoadDirectoryFiles(users_directory);
-	this->users_directory=users_directory;
-	for (index = 0; index < user_files.count; index++) {
-		std::ifstream file2(user_files.paths[index]);
-		if (file2.is_open()) {
-			std::string file_content2((std::istreambuf_iterator<char>(file2)), std::istreambuf_iterator<char>());
-			try {
-				nlohmann::json j2 = nlohmann::json::parse(file_content2);
-				user_vector.push_back(read_user_from_json(j2));
-			} catch (const nlohmann::json::exception& e2) {
-				std::cerr << "Error parsing JSON from user file: " << user_files.paths[index] << "\n" << e2.what() << std::endl;
-			}
-		} else {
-			std::cerr << "Error opening file: " << user_files.paths[index] << std::endl;
-		}
-
-
-	}	
-}
-
-
 void FileManager::add_user(const std::string& username, double user_kgs) {
 	json user_json;
 	user_json["name"] = username;
@@ -233,7 +198,7 @@ void FileManager::add_user(const std::string& username, double user_kgs) {
 		read_file >> read_user_json;
 		read_file.close();
 
-		User* new_user = read_user_from_json(read_user_json);
+		User* new_user = user_from_json(read_user_json);
 		if (new_user) {
 			user_vector.push_back(new_user);
 		} else {
@@ -244,12 +209,6 @@ void FileManager::add_user(const std::string& username, double user_kgs) {
 	}
 }
 
-
-
-std::vector<Exercise*> FileManager::get_exercise_vector() 
-{
-	return exercise_vector;
-}
 
 void FileManager::add_workout_to_user(const std::string& username, const std::string& workout_name) {
 
@@ -304,11 +263,53 @@ void FileManager::add_workout_to_user(const std::string& username, const std::st
 }
 
 
+
+//Getters
 std::vector<User*> FileManager::get_user_vector(){
 	return user_vector;
 }
 
-
 std::vector<Workout*> FileManager::get_workout_vector(){
 	return workout_vector;
+}
+
+std::vector<Exercise*> FileManager::get_exercise_vector() 
+{
+	return exercise_vector;
+}
+
+
+//Helper
+ExerciseType FileManagerHelper::exercise_type_from_string(const std::string& type_str) 
+{
+	if(type_str=="Calisthenics")
+		return ExerciseType::Calisthenics;
+
+	if(type_str=="Running")
+		return ExerciseType::Running;
+
+	if(type_str=="Weight")
+		return ExerciseType::Weight;
+
+	throw std::invalid_argument("Invalid ExerciseType string");
+}
+
+
+template <typename T> void FileManagerHelper::add_files_to_vector(std::vector<T>& vector, std::function<T(json)> from_json, FilePathList files)
+{
+	unsigned int index;
+	for(index=0; index<files.count; index++) {
+		std::ifstream file(files.paths[index]);
+		if (file.is_open()) {
+			std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+			try {
+				json j = json::parse(file_content);
+				vector.push_back(from_json(j));
+			}
+			 catch (const json::exception& e) {
+				std::cerr << "Error parsing JSON from file: " << files.paths[index] << "\n" << e.what() << std::endl;
+			}
+		} 
+		else std::cerr << "Error opening file: " << files.paths[index] << std::endl;
+	}
 }
