@@ -21,11 +21,8 @@ Display::Display(){
 	this->workout_box=false;
 	this->fm=new FileManager("./data/exercises", "./data/workouts", "./data/users");
 	this->scrollY=0;
-	this->spacing=100;
 	this->s1="";
 	this->s2="";
-	this->startX=0;
-	this->startY=0;
 }
 
 void Display::DrawBackTexture(bool& flag) {
@@ -54,12 +51,12 @@ void Display::DrawBackTexture(bool& flag) {
 void Display::DrawAddButton(bool& flag, std::string text, float currentY ) {
 
 	float boxPadding=10, boxHeight=60;
-        Rectangle addRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
+        Rectangle addRect = {0, currentY, float(GetScreenWidth()), boxHeight};
 
         DrawRectangleRec(addRect, LIGHTGRAY);
         DrawRectangleLinesEx(addRect, 2, DARKGRAY);
 
-        float addTextStartX = startX + boxPadding;
+        float addTextStartX = boxPadding;
         float addTextStartY = currentY + boxPadding;
 	DrawTextEx(GetFontDefault(), text.c_str(), {addTextStartX, addTextStartY}, 24, 2, BLACK);
 
@@ -73,7 +70,7 @@ void Display::RenderWorkoutList() {
 	double kg_param=current_user->get_kg();	
 	std::string username=current_user->get_name();
 	std::vector<Workout*>* workouts=current_user->get_workout_vector();
-	float currentY = startY - scrollY; 
+	float currentY = - scrollY; 
 	float boxPadding = 10; 
 	float lineSpacing = 20; 
 	float boxSpacing = 30; 
@@ -81,7 +78,7 @@ void Display::RenderWorkoutList() {
 	DrawBackTexture(display_user);
 
 	std::string title = username + "'s workouts  " +  helper.to_string_with_precision(kg_param, 1) + " kgs";
-	DrawTextEx(GetFontDefault(), title.c_str(), {startX, currentY}, 28, 2, BLACK);
+	DrawTextEx(GetFontDefault(), title.c_str(), {0, currentY}, 28, 2, BLACK);
 	currentY += 50; 
 
 	float boxHeight = 2 * lineSpacing + boxPadding * 2; 
@@ -89,12 +86,12 @@ void Display::RenderWorkoutList() {
 	for (const auto& workout : *workouts) {
 		if (!workout) continue; 
 
-		Rectangle workoutRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
+		Rectangle workoutRect = {0, currentY, float(GetScreenWidth()), boxHeight};
 
 		DrawRectangleRec(workoutRect, LIGHTGRAY);
 		DrawRectangleLinesEx(workoutRect, 2, DARKGRAY);
 
-		float textStartX = startX + boxPadding;
+		float textStartX =boxPadding;
 		float textStartY = currentY + boxPadding;
 		DrawTextEx(GetFontDefault(), workout->get_name().c_str(), {textStartX, textStartY}, 24, 2, BLACK);
 
@@ -119,14 +116,14 @@ void Display::RenderExerciseList() {
 
 	std::string workout_name=current_workout->get_name();
 	std::vector<Exercise*> exercises = *(current_workout->get_exercises());
-	float currentY = startY - scrollY; 
+	float currentY = - scrollY; 
 	float textureWidth = 50; 
 	float textureHeight = 50; 
 	float boxPadding = 10; 
 	float lineSpacing = 20; 
 
 
-	DrawTextEx(GetFontDefault(), workout_name.c_str(), {startX, currentY}, 28, 2, BLACK);
+	DrawTextEx(GetFontDefault(), workout_name.c_str(), {0, currentY}, 28, 2, BLACK);
 	currentY += 40; 
 
 
@@ -135,7 +132,7 @@ void Display::RenderExerciseList() {
 	for (size_t i = 0; i < exercises.size(); ++i) {
 		const auto& exercise = exercises[i];
 
-		float texturePosX = startX;
+		float texturePosX = 0;
 		float texturePosY = currentY;
 
 		Rectangle textureRect = {texturePosX, texturePosY, textureWidth, textureHeight};
@@ -216,7 +213,7 @@ void Display::RenderExerciseList() {
 			}
 		}
 
-		currentY += textureHeight + spacing + lineSpacing -20;
+		currentY += textureHeight + lineSpacing + 80;
 	}
 }
 
@@ -224,24 +221,24 @@ void Display::RenderUserList() {
 
 	std::vector<User*> users=fm->get_user_vector();
 
-	float currentY = startY - scrollY; 
+	float currentY =  - scrollY; 
 	float boxPadding = 10.0f;
 	float lineSpacing = 20.0f;
 	float boxHeight = 60.0f; 
 
 	std::string title = "Select user:";
-	DrawTextEx(GetFontDefault(), title.c_str(), {startX, currentY}, 28, 2, BLACK);
+	DrawTextEx(GetFontDefault(), title.c_str(), {0, currentY}, 28, 2, BLACK);
 	currentY += 50; 
 
 	for (const auto& user : users) {
 		if (!user) continue; 
 
-		Rectangle userRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
+		Rectangle userRect = {0, currentY, float(GetScreenWidth()), boxHeight};
 
 		DrawRectangleRec(userRect, LIGHTGRAY);
 		DrawRectangleLinesEx(userRect, 2, DARKGRAY);
 
-		float textStartX = startX + boxPadding;
+		float textStartX = boxPadding;
 		float textStartY = currentY + boxPadding;
 		DrawTextEx(GetFontDefault(), user->get_name().c_str(), {textStartX, textStartY}, 24, 2, BLACK);
 
@@ -255,7 +252,7 @@ void Display::RenderUserList() {
 			}
 		}
 
-		currentY += boxHeight + spacing/2;
+		currentY += boxHeight + 50;
 	}
 
 	DrawAddButton(user_box, "Add user", currentY);
@@ -344,24 +341,24 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 
 void Display::DrawWorkoutInputBox(std::string &workoutname) {
 
-	float startX = 50;
-	float startY = 100;
-	float boxWidth = GetScreenWidth() - startX * 2;
+	float startx = 50;
+	float starty = 100;
+	float boxWidth = float(GetScreenWidth());
 	float boxHeight = 40;
 	float padding = 10;
 
-	Rectangle outerBackgroundRect = {startX - 10, startY - 10, boxWidth + 20, (boxHeight + padding * 2) * 3 + 20};
+	Rectangle outerBackgroundRect = {startx - 10, starty - 10, boxWidth + 20, (boxHeight + padding * 2) * 3 + 20};
 	DrawRectangleRec(outerBackgroundRect, LIGHTGRAY);  
 
-	Rectangle usernameRect = {startX, startY, boxWidth, boxHeight};
+	Rectangle usernameRect = {startx, starty, boxWidth, boxHeight};
 	DrawRectangleRec(usernameRect, RAYWHITE); 
 	DrawRectangleLinesEx(usernameRect, 2, DARKGRAY);
-	DrawTextEx(GetFontDefault(), ("Workout: " + workoutname).c_str(), {startX + padding, startY + padding}, 24, 2, BLACK);
+	DrawTextEx(GetFontDefault(), ("Workout: " + workoutname).c_str(), {padding, padding}, 24, 2, BLACK);
 
 
 	helper.GetTextInput(workoutname, 64);
 
-	Rectangle backRect = {startX, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
+	Rectangle backRect = {startx, starty + (boxHeight + padding) * 2 + padding * 2, 100, 40};
 	DrawTexturePro(back, {0, 0, (float)back.width, (float)back.height}, backRect, {0, 0}, 0.0f, WHITE);
 
 	if (CheckCollisionPointRec(GetMousePosition(), backRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {	
@@ -370,7 +367,7 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 		return;
 	}
 
-	Rectangle okRect = {(float)GetScreenWidth() - 150, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
+	Rectangle okRect = {(float)GetScreenWidth() - 150, starty + (boxHeight + padding) * 2 + padding * 2, 100, 40};
 	DrawTexturePro(ok, {0, 0, (float)ok.width, (float)ok.height}, okRect, {0, 0}, 0.0f, WHITE);
 
 	if (CheckCollisionPointRec(GetMousePosition(), okRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {

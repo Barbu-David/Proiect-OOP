@@ -21,7 +21,7 @@ class Display {
 		Texture2D plus, back, ok;
 
 		bool display_workout, display_user, user_box, workout_box;
-		float scrollY, spacing, startX, startY;
+		float scrollY;
 
 		void RenderExerciseList();
 		void RenderWorkoutList();
