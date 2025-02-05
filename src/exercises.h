@@ -14,7 +14,7 @@ class Exercise {
 	public:
 	
 	//Constructors
-		Exercise();
+		Exercise(std::string Name, std::string Description, Texture2D Photo);
 		Exercise(const Exercise &other);
 	
 	//Getters	
@@ -106,8 +106,7 @@ class Weight : public Calisthenics {
 	
 	//Constructors
 		Weight(const Weight &other, double nweight);
-		using Calisthenics::Calisthenics;
-
+		Weight(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group);
 	//Getters
 		double get_weight();
 

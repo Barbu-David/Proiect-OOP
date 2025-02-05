@@ -3,31 +3,28 @@
 
 //Default Constructors
 
-Exercise::Exercise() {}; //why does this have to exitst??
-
-Running::Running(std::string Name, std::string Description, Texture2D Photo, double intensity_factor) 
-{
-
+Exercise::Exercise(std::string Name, std::string Description, Texture2D Photo) {
 	this->name=Name;
 	this->description=Description;
 	this->photo=Photo;
+} 
 
+Running::Running(std::string Name, std::string Description, Texture2D Photo, double intensity_factor) : Exercise(Name, Description, Photo)
+{
 	this->intensity_factor=intensity_factor;
 	this->distance=0;
 }
 
-Calisthenics::Calisthenics(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group) 
+Calisthenics::Calisthenics(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group) : Exercise(Name, Description, Photo)
 {
 
-	this->name=Name;
-	this->description=Description;
-	this->photo=Photo;
 	this->calories_per_rep=Calories_per_rep;
 	this->muscle_group=Muscle_group;
 	this->repetitions=0;
 	this->sets=0;
 }
 
+Weight::Weight(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group) : Calisthenics(Name, Description, Photo, Calories_per_rep, Muscle_group) {}
 
 //Copy Constructors
 
