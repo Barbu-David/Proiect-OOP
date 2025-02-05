@@ -18,25 +18,18 @@ Workout::Workout(const Workout& other)
 			//ORDINEA ESTE SUPER IMPORTANTA
 
 			if (auto* weight = dynamic_cast<Weight*>(exercise)) {    
-				copiedExercise = new Weight(*weight, weight->get_weight());
+				copiedExercise = new Weight(*weight, weight->get_max_repetitions(), weight->get_max_sets(), weight->get_weight());
 				dynamic_cast<Weight*>(copiedExercise)->reset_reps();     // Reset repetitions
 				dynamic_cast<Weight*>(copiedExercise)->reset_sets();     // Reset sets
-				dynamic_cast<Weight*>(copiedExercise)->set_reps(weight->get_max_repetitions());
-				dynamic_cast<Weight*>(copiedExercise)->set_sets(weight->get_max_sets());
 
 			} else	if (auto* calisthenics = dynamic_cast<Calisthenics*>(exercise)) {
-				copiedExercise = new Calisthenics(*calisthenics);
+				copiedExercise = new Calisthenics(*calisthenics, calisthenics->get_max_repetitions(), calisthenics->get_max_sets());
 				dynamic_cast<Calisthenics*>(copiedExercise)->reset_reps();  // Reset repetitions
 				dynamic_cast<Calisthenics*>(copiedExercise)->reset_sets();  // Reset sets
-				dynamic_cast<Calisthenics*>(copiedExercise)->set_reps(calisthenics->get_max_repetitions());
-				dynamic_cast<Calisthenics*>(copiedExercise)->set_sets(calisthenics->get_max_sets());
 
 			} else if (auto* running = dynamic_cast<Running*>(exercise)) {
-				copiedExercise = new Running(*running);
-				dynamic_cast<Running*>(copiedExercise)->set_distance(0); // Reset distance
-				dynamic_cast<Running*>(copiedExercise)->set_distance(running->get_max_distance());
-				dynamic_cast<Running*>(copiedExercise)->set_time(running->get_time());
-
+				copiedExercise = new Running(*running, running->get_max_distance(), running->get_time());
+				dynamic_cast<Running*>(copiedExercise)->reset_distance(); // Reset distance
 
 
 			} else {

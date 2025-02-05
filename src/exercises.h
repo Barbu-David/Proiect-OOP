@@ -43,7 +43,7 @@ class Running : public Exercise {
 	public:
 
 	//Constructors
-		Running(const Running &other);
+		Running(const Running &other, double max_distance, double time);
 		Running(std::string Name, std::string Description, Texture2D Photo, double intensity_factor);
 
 	//Getters
@@ -53,8 +53,7 @@ class Running : public Exercise {
 		double get_intensity_factor();
 
 	//Setters
-		void set_distance(double distance);
-		void set_time(double time);	
+		void reset_distance();
 
 	//Info functions
 		double get_progress() override;
@@ -72,7 +71,7 @@ class Calisthenics : public Exercise {
 	public:
 
 	//Constructors
-		Calisthenics(const Calisthenics &other);
+		Calisthenics(const Calisthenics &other, int max_repetitions, int max_sets);
 		Calisthenics(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group);	
 
 	//Getters
@@ -83,10 +82,8 @@ class Calisthenics : public Exercise {
 		std::string get_muscle_group();	
 		
 	//Setters
-		void set_reps(int reps);
-		void set_sets(int sets);
+		void reset_reps();
 		void reset_sets();
-		void reset_reps(); //Unfortunate naming
 
 	//Info functions
 		double get_progress() override;
@@ -105,7 +102,7 @@ class Weight : public Calisthenics {
 	public:
 	
 	//Constructors
-		Weight(const Weight &other, double nweight);
+		Weight(const Weight &other,int max_repetitions, int max_sets, double weight);
 		Weight(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group);
 	//Getters
 		double get_weight();

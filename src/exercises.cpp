@@ -36,23 +36,29 @@ Exercise::Exercise(const Exercise &other)
 	this->type=other.type;
 }
 
-Running::Running(const Running &other) : Exercise(other) 
+//Maybe these should be subclasses?
+
+Running::Running(const Running &other, double max_distance, double time) : Exercise(other) 
 {
 	this->distance = other.distance;
+	this->max_distance=max_distance;
+	this->time=time;
 	this->intensity_factor = other.intensity_factor;
 }
 
-Calisthenics::Calisthenics(const Calisthenics &other) : Exercise(other) 
+Calisthenics::Calisthenics(const Calisthenics &other, int max_repetitions, int max_sets) : Exercise(other) 
 {
 	this->repetitions = other.repetitions;
 	this->sets = other.sets;
 	this->calories_per_rep = other.calories_per_rep;
 	this->muscle_group = other.muscle_group;
+	this->max_repetitions=max_repetitions;
+	this->max_sets=max_sets;
 }
 
-Weight::Weight(const Weight &other, double nweight) : Calisthenics(other)
+Weight::Weight(const Weight &other, int max_repetitions, int max_sets, double weight) : Calisthenics(other, max_repetitions, max_sets)
 {
-	this->weight = nweight;
+	this->weight = weight;
 }
 
 //Getters
@@ -135,25 +141,11 @@ void Exercise::set_type(ExerciseType type)
 	this->type=type;
 }
 
-void Running::set_distance(double distance)
+void Running::reset_distance()
 {
-	this->max_distance=distance;
+	this->distance=0;
 }
 
-void Running::set_time(double time)
-{
-	this->time=time;
-}
-
-void Calisthenics::set_reps(int reps)
-{
-	this->max_repetitions=reps;
-}
-
-void Calisthenics::set_sets(int sets) 
-{
-	this->max_sets=sets;
-}
 
 void Calisthenics::reset_reps() 
 {

@@ -79,10 +79,8 @@ std::string DisplayHelper::getProgressDetails (Exercise* exercise)
 			", Sets: " + std::to_string(calisthenics->get_sets()) + "/" + std::to_string(calisthenics->get_max_sets()) +
 			", Muscle Group: " + calisthenics->get_muscle_group();
 
-		if(type==ExerciseType::Weight) progressDetails=progressDetails + "Selected weight: KG: " + to_string_with_precision(dynamic_cast<Weight*>(calisthenics)->get_weight(),1);
+		if(type==ExerciseType::Weight) progressDetails += "Selected weight: KG: " + to_string_with_precision(dynamic_cast<Weight*>(calisthenics)->get_weight(),1);
 	}
-
-
 	else if(type==ExerciseType::Running) {
 		auto* running = dynamic_cast<Running*>(exercise);
 		progressDetails = "Distance:" + to_string_with_precision(running->get_distance(), 2) + "/" + to_string_with_precision(running->get_max_distance(), 2) + " km" +
