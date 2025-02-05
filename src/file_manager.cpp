@@ -118,10 +118,9 @@ Workout* FileManager::workout_from_json(json workout_json) {
 									   int max_repetitions=j["max_repetitions"].get<int>();
 									   int max_sets=j["max_sets"].get<int>();
 									   double weight=j["weight"].get<double>();
-									   new_exercise = new Weight(*dynamic_cast<Weight*>(exercise));
+									   new_exercise = new Weight(*dynamic_cast<Weight*>(exercise), weight);
 									   dynamic_cast<Weight*>(new_exercise)->set_reps(max_repetitions);
 									   dynamic_cast<Weight*>(new_exercise)->set_sets(max_sets); 
-									   dynamic_cast<Weight*>(new_exercise)->set_weight(weight);
 
 									   break;
 								   }

@@ -14,20 +14,22 @@ Workout::Workout(const Workout& other)
 
 			Exercise* copiedExercise = nullptr;
 
-			// Dynamically cast and copy derived classes
-			if (auto* calisthenics = dynamic_cast<Calisthenics*>(exercise)) {
-				copiedExercise = new Calisthenics(*calisthenics);
-				dynamic_cast<Calisthenics*>(copiedExercise)->reset_reps();  // Reset repetitions
-				dynamic_cast<Calisthenics*>(copiedExercise)->reset_sets();  // Reset sets
-				dynamic_cast<Calisthenics*>(copiedExercise)->set_reps(calisthenics->get_max_repetitions());
-				dynamic_cast<Calisthenics*>(copiedExercise)->set_sets(calisthenics->get_max_sets());
 
-			} else if (auto* weight = dynamic_cast<Weight*>(exercise)) {
+			//ORDINEA ESTE SUPER IMPORTANTA
+
+			if (auto* weight = dynamic_cast<Weight*>(exercise)) {    
 				copiedExercise = new Weight(*weight, weight->get_weight());
 				dynamic_cast<Weight*>(copiedExercise)->reset_reps();     // Reset repetitions
 				dynamic_cast<Weight*>(copiedExercise)->reset_sets();     // Reset sets
 				dynamic_cast<Weight*>(copiedExercise)->set_reps(weight->get_max_repetitions());
 				dynamic_cast<Weight*>(copiedExercise)->set_sets(weight->get_max_sets());
+
+			} else	if (auto* calisthenics = dynamic_cast<Calisthenics*>(exercise)) {
+				copiedExercise = new Calisthenics(*calisthenics);
+				dynamic_cast<Calisthenics*>(copiedExercise)->reset_reps();  // Reset repetitions
+				dynamic_cast<Calisthenics*>(copiedExercise)->reset_sets();  // Reset sets
+				dynamic_cast<Calisthenics*>(copiedExercise)->set_reps(calisthenics->get_max_repetitions());
+				dynamic_cast<Calisthenics*>(copiedExercise)->set_sets(calisthenics->get_max_sets());
 
 			} else if (auto* running = dynamic_cast<Running*>(exercise)) {
 				copiedExercise = new Running(*running);

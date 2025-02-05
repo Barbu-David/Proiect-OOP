@@ -155,21 +155,29 @@ void Display::RenderExerciseList() {
 		ExerciseType type = exercise->get_type();
 		std::string progressDetails;
 
-		if (type == ExerciseType::Calisthenics || type == ExerciseType::Weight) {
+		if (type == ExerciseType::Calisthenics) {
 			auto* calisthenics = dynamic_cast<Calisthenics*>(exercise);
 			if (calisthenics) {
 				progressDetails = "Reps: " + std::to_string(calisthenics->get_repetitons()) + "/" + std::to_string(calisthenics->get_max_repetitions()) + 
 					", Sets: " + std::to_string(calisthenics->get_sets()) + "/" + std::to_string(calisthenics->get_max_sets()) +
 					", Muscle Group: " + calisthenics->get_muscle_group();
 
-
-				if(type==ExerciseType::Weight) {
-					progressDetails=progressDetails + "Selected weight: KG: " + helper.to_string_with_precision(GetWeightByExerciseName(calisthenics->get_name())  ,1);
 				}
-			} else progressDetails="Error";	
+			 else progressDetails="Error";	
+		}
+		else if (type==ExerciseType::Weight) {
+
+			auto* weight = dynamic_cast<Weight*>(exercise);
+			if (weight) {
+				progressDetails = "Reps: " + std::to_string(weight->get_repetitons()) + "/" + std::to_string(weight->get_max_repetitions()) + 
+					", Sets: " + std::to_string(weight->get_sets()) + "/" + std::to_string(weight->get_max_sets()) +
+					", Muscle Group: " + weight->get_muscle_group();
+
+				progressDetails=progressDetails + "Selected weight: KG: " + helper.to_string_with_precision(weight->get_weight(),1);
+			}
+			else progressDetails="Error";	
 
 		}
-
 		else if(type==ExerciseType::Running) {
 			auto* running = dynamic_cast<Running*>(exercise);
 			if (running) {
@@ -179,7 +187,7 @@ void Display::RenderExerciseList() {
 			} else progressDetails="Error";	
 
 		}
-		
+
 		DrawTextEx(GetFontDefault(), progressDetails.c_str(), {textStartX, currentY + 2 * lineSpacing}, 16, 1, BLACK);
 		std::string caloriesDetails = "Calories burned: " + helper.to_string_with_precision(exercise->calculate_calories(90),1) + "/" + helper.to_string_with_precision(exercise->calculate_calories_max(90), 1);
 		DrawTextEx(GetFontDefault(), caloriesDetails.c_str(), {textStartX, currentY + 3 * lineSpacing}, 16, 1, DARKGRAY);
@@ -373,7 +381,7 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 	if (CheckCollisionPointRec(GetMousePosition(), okRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 
 		try {
-		fm->add_workout_to_user(current_user->get_name(), workoutname); }
+			fm->add_workout_to_user(current_user->get_name(), workoutname); }
 
 		catch (std::runtime_error& e) {
 			std::cout<<"Error adding user ";
@@ -385,22 +393,6 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 
 	DrawRectangleLinesEx(outerBackgroundRect, 4, DARKGRAY);  
 }
-
-
-double Display::GetWeightByExerciseName(const std::string& exercise_name)
-{
-	for (Workout* workout : fm->get_workout_vector()) {
-		std::vector<Exercise*> exercise_vector = *(workout->get_exercises());
-		for (Exercise* exercise : exercise_vector) {
-			Weight* weight_exercise = dynamic_cast<Weight*>(exercise);
-			if (weight_exercise && exercise->get_name() == exercise_name) {
-				return weight_exercise->get_weight();
-			}
-		}
-	}
-	return 0.0;
-}
-
 
 void Display::UpdateScroll() 
 {

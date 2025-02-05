@@ -32,7 +32,6 @@ class Display {
 		void DrawUserInputBox(std::string &username, std::string &weightKg);
 		void DrawWorkoutInputBox(std::string &workoutname);
 
-		double GetWeightByExerciseName(const std::string& exercise_name);
 		void DrawBackTexture(bool& flag);
 		void DrawAddButton(bool& flag, std::string text, float currentY);
 };

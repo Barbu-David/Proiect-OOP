@@ -145,7 +145,6 @@ void Running::set_time(double time)
 	this->time=time;
 }
 
-
 void Calisthenics::set_reps(int reps)
 {
 	this->max_repetitions=reps;
@@ -164,11 +163,6 @@ void Calisthenics::reset_reps()
 void Calisthenics::reset_sets() 
 {
 	this->sets=0;
-}
-
-void Weight::set_weight(double nweight) 
-{
-	this->weight=nweight;
 }
 
 //Progress

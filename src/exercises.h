@@ -81,7 +81,7 @@ class Calisthenics : public Exercise {
 		int get_sets();
 		int get_max_sets();
 		std::string get_muscle_group();	
-
+		
 	//Setters
 		void set_reps(int reps);
 		void set_sets(int sets);
@@ -109,9 +109,6 @@ class Weight : public Calisthenics {
 		Weight(std::string Name, std::string Description, Texture2D Photo, double Calories_per_rep, std::string Muscle_group);
 	//Getters
 		double get_weight();
-
-	//Setters
-		void set_weight(double nweight);
 
 	//Info functions
 		double calculate_calories(double user_kg) override;
