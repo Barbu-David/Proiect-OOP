@@ -4,10 +4,9 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
-#include "sorter.h"
 #include <fstream>
 #include <cstring>
-
+#include "display_helper.h"
 
 std::string to_string_with_precision(double value, int precision) {
 	std::ostringstream out;
@@ -128,7 +127,7 @@ void Display::RenderWorkoutList() {
 void Display::RenderExerciseList() {
 
 	std::string workout_name=current_workout->get_name();
-	std::vector<Exercise*> exercises = current_workout->get_exercises();
+	std::vector<Exercise*> exercises = *(current_workout->get_exercises());
 	float currentY = startY - scrollY; 
 	float textureWidth = 50; 
 	float textureHeight = 50; 
@@ -280,8 +279,8 @@ void Display::Render() {
 		RenderWorkoutList();
 	} else if (current_workout != nullptr) {
 		RenderExerciseList();
-		std::vector<Exercise*> current_vector=current_workout->get_exercises();
-		handleKeyPressAndSort(current_vector);
+		std::vector<Exercise*>* current_vector=current_workout->get_exercises();
+		handleKeyPressAndSort(*current_vector);
 	}
 
 	UpdateScroll();
@@ -418,7 +417,7 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 double Display::GetWeightByExerciseName(const std::string& exercise_name)
 {
 	for (Workout* workout : fm->get_workout_vector()) {
-		std::vector<Exercise*> exercise_vector = workout->get_exercises();
+		std::vector<Exercise*> exercise_vector = *(workout->get_exercises());
 		for (Exercise* exercise : exercise_vector) {
 			Weight* weight_exercise = dynamic_cast<Weight*>(exercise);
 			if (weight_exercise && exercise->get_name() == exercise_name) {

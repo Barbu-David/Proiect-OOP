@@ -9,6 +9,7 @@ class Display {
 		Display();
 		void Render(); 
 	private:
+
 		void RenderExerciseList();
 		void RenderWorkoutList();
 		void RenderUserList();

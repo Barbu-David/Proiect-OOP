@@ -12,7 +12,7 @@ class Workout {
 		
 		std::string get_name();
 		std::string get_description();
-		std::vector<Exercise*> get_exercises();
+		std::vector<Exercise*>* get_exercises();
 	private:	
 		std::string name, description;
 		std::vector<Exercise*> exercises;	

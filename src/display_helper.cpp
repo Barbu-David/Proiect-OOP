@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "sorter.h"
+#include "display_helper.h"
 
 std::vector<Exercise*> bubbleSort(std::vector<Exercise*>& exercises, std::function<bool(Exercise*, Exercise*)> comparator) {
 	size_t n = exercises.size();
@@ -28,6 +28,8 @@ void handleKeyPressAndSort(std::vector<Exercise*>& exercises) {
 			return a->get_name() < b->get_name();  // Sorting alphabetically by name
 		};
 		bubbleSort(exercises, comparator);
+	
+
 	}
 
 	if (IsKeyPressed(KEY_C)) {
@@ -35,7 +37,8 @@ void handleKeyPressAndSort(std::vector<Exercise*>& exercises) {
 			return a->calculate_calories_max(90.0) > b->calculate_calories_max(90.0);  // Sorting by calories 
 		};
 		bubbleSort(exercises, comparator);
-	}
+			std::cout<<"\nsorting\n";
+		}
 
 	if (IsKeyPressed(KEY_P)) {
 		auto comparator = [](Exercise* a, Exercise* b) {

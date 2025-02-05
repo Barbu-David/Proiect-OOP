@@ -17,19 +17,19 @@ FileManager::FileManager(const char* exercises_directory, const char* w_director
 
 	helper.add_files_to_vector(
 			exercise_vector,
-			std::function<Exercise*(json)>([this](json j) { return this->exercise_from_json(j); }),
+			std::function<Exercise*(json)>([this](json j) { return this->exercise_from_json(j);}),
 			exercise_files
 			);
 
 	helper.add_files_to_vector(
 			workout_vector,
-			std::function<Workout*(json)>([this](json j) { return this->workout_from_json(j); }),
+			std::function<Workout*(json)>([this](json j) { return this->workout_from_json(j);}),
 			workout_files
 			);
 
 	helper.add_files_to_vector(
 			user_vector,
-			std::function<User*(json)>([this](json j) { return this->user_from_json(j); }),
+			std::function<User*(json)>([this](json j) { return this->user_from_json(j);}),
 			user_files
 			);
 

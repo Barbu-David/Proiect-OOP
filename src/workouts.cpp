@@ -59,8 +59,8 @@ std::string Workout::get_description()
 	return description;
 }
 
-std::vector<Exercise*> Workout::get_exercises()
+std::vector<Exercise*>* Workout::get_exercises()
 {
-	return exercises;
+	return &exercises;
 }
 
