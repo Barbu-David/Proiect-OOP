@@ -155,14 +155,14 @@ User* FileManager::user_from_json(json user_json) {
 
 			Workout* matched_workout = nullptr;
 			for (Workout* workout : workout_vector) {
-				if (workout->name == workout_name_str) {
+				if (workout->get_name() == workout_name_str) {
 					matched_workout = workout;
 					break;
 				}
 			}
 
 			if (matched_workout) {
-				new_user->get_workout_vector().push_back(new Workout(*matched_workout));
+				new_user->get_workout_vector()->push_back(new Workout(*matched_workout));
 			} else {
 				std::cerr << "Workout not found: " << workout_name_str << " for user: " << user_name << std::endl;
 			}
@@ -227,7 +227,7 @@ void FileManager::add_workout_to_user(const std::string& username, const std::st
 	User* user = *user_it;
 
 	auto workout_it = std::find_if(workout_vector.begin(), workout_vector.end(), [&workout_name](Workout* workout) {
-			return workout->name == workout_name;
+			return workout->get_name() == workout_name;
 			});
 
 	if (workout_it == workout_vector.end()) {
@@ -236,7 +236,7 @@ void FileManager::add_workout_to_user(const std::string& username, const std::st
 
 	Workout* workout = *workout_it;
 
-	user->get_workout_vector().push_back(new Workout(*workout));
+	user->get_workout_vector()->push_back(new Workout(*workout));
 
 	std::ifstream input_file(user_json_path);
 	if (!input_file.is_open()) {

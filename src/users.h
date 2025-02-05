@@ -9,7 +9,7 @@ class User {
 
 		std::string get_name();
 		double get_kg();
-		std::vector<Workout*> get_workout_vector();
+		std::vector<Workout*>* get_workout_vector();
 
 	private:
 		std::string name;	

@@ -15,7 +15,8 @@ std::string User::get_name()
 {
 	return name;	
 }
-std::vector<Workout*> User::get_workout_vector()
+
+std::vector<Workout*>* User::get_workout_vector()
 {
-	return workout_vector;
+	return &workout_vector;
 }

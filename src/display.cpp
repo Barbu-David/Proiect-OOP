@@ -36,7 +36,6 @@ Display::Display(){
 	this->s2="";
 	this->startX=0;
 	this->startY=0;
-
 }
 
 void Display::DrawBackTexture(bool& flag) {
@@ -83,8 +82,7 @@ void Display::RenderWorkoutList() {
 
 	double kg_param=current_user->get_kg();	
 	std::string username=current_user->get_name();
-	std::vector<Workout*> workouts=current_user->get_workout_vector();
-
+	std::vector<Workout*>* workouts=current_user->get_workout_vector();
 	float currentY = startY - scrollY; 
 	float boxPadding = 10; 
 	float lineSpacing = 20; 
@@ -98,7 +96,7 @@ void Display::RenderWorkoutList() {
 
 	float boxHeight = 2 * lineSpacing + boxPadding * 2; 
 
-	for (const auto& workout : workouts) {
+	for (const auto& workout : *workouts) {
 		if (!workout) continue; 
 
 		Rectangle workoutRect = {startX, currentY, GetScreenWidth() - startX * 2, boxHeight};
@@ -108,9 +106,9 @@ void Display::RenderWorkoutList() {
 
 		float textStartX = startX + boxPadding;
 		float textStartY = currentY + boxPadding;
-		DrawTextEx(GetFontDefault(), workout->name.c_str(), {textStartX, textStartY}, 24, 2, BLACK);
+		DrawTextEx(GetFontDefault(), workout->get_name().c_str(), {textStartX, textStartY}, 24, 2, BLACK);
 
-		DrawTextEx(GetFontDefault(), workout->description.c_str(), {textStartX, textStartY + lineSpacing}, 20, 1, DARKGRAY);
+		DrawTextEx(GetFontDefault(), workout->get_description().c_str(), {textStartX, textStartY + lineSpacing}, 20, 1, DARKGRAY);
 
 		if (CheckCollisionPointRec(GetMousePosition(), workoutRect)) {
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -129,8 +127,8 @@ void Display::RenderWorkoutList() {
 
 void Display::RenderExerciseList() {
 
-	std::string workout_name=current_workout->name;
-	std::vector<Exercise*> exercises = current_workout->exercises;
+	std::string workout_name=current_workout->get_name();
+	std::vector<Exercise*> exercises = current_workout->get_exercises();
 	float currentY = startY - scrollY; 
 	float textureWidth = 50; 
 	float textureHeight = 50; 
@@ -282,7 +280,8 @@ void Display::Render() {
 		RenderWorkoutList();
 	} else if (current_workout != nullptr) {
 		RenderExerciseList();
-		handleKeyPressAndSort(current_workout->exercises);
+		std::vector<Exercise*> current_vector=current_workout->get_exercises();
+		handleKeyPressAndSort(current_vector);
 	}
 
 	UpdateScroll();
@@ -365,7 +364,7 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 
 	}
 
-	DrawRectangleLinesEx(outerBackgroundRect, 4, DARKGRAY);  // Draw border around the UI
+	DrawRectangleLinesEx(outerBackgroundRect, 4, DARKGRAY); 
 }
 
 void Display::DrawWorkoutInputBox(std::string &workoutname) {
@@ -416,9 +415,11 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 }
 
 
-double Display::GetWeightByExerciseName(const std::string& exercise_name) {
+double Display::GetWeightByExerciseName(const std::string& exercise_name)
+{
 	for (Workout* workout : fm->get_workout_vector()) {
-		for (Exercise* exercise : workout->exercises) {
+		std::vector<Exercise*> exercise_vector = workout->get_exercises();
+		for (Exercise* exercise : exercise_vector) {
 			Weight* weight_exercise = dynamic_cast<Weight*>(exercise);
 			if (weight_exercise && exercise->get_name() == exercise_name) {
 				return weight_exercise->get_weight();
@@ -429,7 +430,8 @@ double Display::GetWeightByExerciseName(const std::string& exercise_name) {
 }
 
 
-void Display::UpdateScroll() {
+void Display::UpdateScroll() 
+{
 	float wheelMove = GetMouseWheelMove();
 
 	if (wheelMove != 0) {

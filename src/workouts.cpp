@@ -48,3 +48,19 @@ Workout::Workout(const Workout& other)
 		}
 	}
 
+
+std::string Workout::get_name()
+{
+	return name;
+}
+
+std::string Workout::get_description()
+{
+	return description;
+}
+
+std::vector<Exercise*> Workout::get_exercises()
+{
+	return exercises;
+}
+
