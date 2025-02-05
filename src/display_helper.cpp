@@ -1,7 +1,8 @@
 #include <algorithm>
 #include "display_helper.h"
+#include <iomanip>
 
-std::vector<Exercise*> bubbleSort(std::vector<Exercise*>& exercises, std::function<bool(Exercise*, Exercise*)> comparator) {
+std::vector<Exercise*> DisplayHelper::bubbleSort(std::vector<Exercise*>& exercises, std::function<bool(Exercise*, Exercise*)> comparator) {
 	size_t n = exercises.size();
 	bool swapped;
 
@@ -22,7 +23,7 @@ std::vector<Exercise*> bubbleSort(std::vector<Exercise*>& exercises, std::functi
 	return exercises;
 }
 
-void handleKeyPressAndSort(std::vector<Exercise*>& exercises) {
+void DisplayHelper::handleKeyPressAndSort(std::vector<Exercise*>& exercises) {
 	if (IsKeyPressed(KEY_A)) {
 		auto comparator = [](Exercise* a, Exercise* b) {
 			return a->get_name() < b->get_name();  // Sorting alphabetically by name
@@ -37,7 +38,6 @@ void handleKeyPressAndSort(std::vector<Exercise*>& exercises) {
 			return a->calculate_calories_max(90.0) > b->calculate_calories_max(90.0);  // Sorting by calories 
 		};
 		bubbleSort(exercises, comparator);
-			std::cout<<"\nsorting\n";
 		}
 
 	if (IsKeyPressed(KEY_P)) {
@@ -48,3 +48,21 @@ void handleKeyPressAndSort(std::vector<Exercise*>& exercises) {
 	}
 }
 
+std::string DisplayHelper::to_string_with_precision(double value, int precision) {
+        std::ostringstream out;
+        out << std::fixed << std::setprecision(precision) << value;
+        return out.str();
+}
+
+void DisplayHelper::GetTextInput(std::string &buffer, int maxLength) {
+        int key;
+        while ((key = GetCharPressed()) != 0) {
+                if (key >= 32 && key <= 125 && buffer.size() <(unsigned int) maxLength - 1) {
+                        buffer += (char)key;
+                }
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE) && !buffer.empty()) {
+                buffer.pop_back();
+        }
+}

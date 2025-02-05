@@ -2,18 +2,9 @@
 #include <raylib.h>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 #include <string>
 #include <fstream>
 #include <cstring>
-#include "display_helper.h"
-
-std::string to_string_with_precision(double value, int precision) {
-	std::ostringstream out;
-	out << std::fixed << std::setprecision(precision) << value;
-	return out.str();
-}
-
 
 Display::Display(){
 
@@ -89,7 +80,7 @@ void Display::RenderWorkoutList() {
 
 	DrawBackTexture(display_user);
 
-	std::string title = username + "'s workouts  " +  to_string_with_precision(kg_param, 1) + " kgs";
+	std::string title = username + "'s workouts  " +  helper.to_string_with_precision(kg_param, 1) + " kgs";
 	DrawTextEx(GetFontDefault(), title.c_str(), {startX, currentY}, 28, 2, BLACK);
 	currentY += 50; 
 
@@ -176,7 +167,7 @@ void Display::RenderExerciseList() {
 
 
 				if(type==ExerciseType::Weight) {
-					progressDetails=progressDetails + "Selected weight: KG: " + to_string_with_precision(GetWeightByExerciseName(calisthenics->get_name())  ,1);
+					progressDetails=progressDetails + "Selected weight: KG: " + helper.to_string_with_precision(GetWeightByExerciseName(calisthenics->get_name())  ,1);
 				}
 			} else progressDetails="Error";	
 
@@ -185,15 +176,15 @@ void Display::RenderExerciseList() {
 		else if(type==ExerciseType::Running) {
 			auto* running = dynamic_cast<Running*>(exercise);
 			if (running) {
-				progressDetails = "Distance:" + to_string_with_precision(running->get_distance(), 2) + "/" + to_string_with_precision(running->get_max_distance(), 2) + " km" +
-					", Time: " + to_string_with_precision(running->get_time(), 2) + " m" +
-					", Intensity Factor: " + to_string_with_precision(running->get_intensity_factor(), 1);
+				progressDetails = "Distance:" + helper.to_string_with_precision(running->get_distance(), 2) + "/" + helper.to_string_with_precision(running->get_max_distance(), 2) + " km" +
+					", Time: " + helper.to_string_with_precision(running->get_time(), 2) + " m" +
+					", Intensity Factor: " + helper.to_string_with_precision(running->get_intensity_factor(), 1);
 			} else progressDetails="Error";	
 
 		}
 		
 		DrawTextEx(GetFontDefault(), progressDetails.c_str(), {textStartX, currentY + 2 * lineSpacing}, 16, 1, BLACK);
-		std::string caloriesDetails = "Calories burned: " + to_string_with_precision(exercise->calculate_calories(90),1) + "/" + to_string_with_precision(exercise->calculate_calories_max(90), 1);
+		std::string caloriesDetails = "Calories burned: " + helper.to_string_with_precision(exercise->calculate_calories(90),1) + "/" + helper.to_string_with_precision(exercise->calculate_calories_max(90), 1);
 		DrawTextEx(GetFontDefault(), caloriesDetails.c_str(), {textStartX, currentY + 3 * lineSpacing}, 16, 1, DARKGRAY);
 
 		double progress = exercise->get_progress();
@@ -254,7 +245,7 @@ void Display::RenderUserList() {
 		float textStartY = currentY + boxPadding;
 		DrawTextEx(GetFontDefault(), user->get_name().c_str(), {textStartX, textStartY}, 24, 2, BLACK);
 
-		std::string weightText = to_string_with_precision(user->get_kg(), 1) + " kg";
+		std::string weightText = helper.to_string_with_precision(user->get_kg(), 1) + " kg";
 		DrawTextEx(GetFontDefault(), weightText.c_str(), {textStartX, textStartY + lineSpacing}, 20, 1, DARKGRAY);
 
 		if (CheckCollisionPointRec(GetMousePosition(), userRect)) {
@@ -280,26 +271,11 @@ void Display::Render() {
 	} else if (current_workout != nullptr) {
 		RenderExerciseList();
 		std::vector<Exercise*>* current_vector=current_workout->get_exercises();
-		handleKeyPressAndSort(*current_vector);
+		helper.handleKeyPressAndSort(*current_vector);
 	}
 
 	UpdateScroll();
 }
-
-
-void GetTextInput(std::string &buffer, int maxLength) {
-	int key;
-	while ((key = GetCharPressed()) != 0) {
-		if (key >= 32 && key <= 125 && buffer.size() <(unsigned int) maxLength - 1) {
-			buffer += (char)key;
-		}
-	}
-
-	if (IsKeyPressed(KEY_BACKSPACE) && !buffer.empty()) {
-		buffer.pop_back();
-	}
-}
-
 
 void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 	static bool usernameActive = false;
@@ -335,10 +311,10 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 	}
 
 	if (usernameActive) {
-		GetTextInput(username, 64);
+		helper.GetTextInput(username, 64);
 	}
 	if (weightActive) {
-		GetTextInput(weightKg, 64);
+		helper.GetTextInput(weightKg, 64);
 	}
 
 	Rectangle backRect = {startX, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
@@ -383,7 +359,7 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 	DrawTextEx(GetFontDefault(), ("Workout: " + workoutname).c_str(), {startX + padding, startY + padding}, 24, 2, BLACK);
 
 
-	GetTextInput(workoutname, 64);
+	helper.GetTextInput(workoutname, 64);
 
 	Rectangle backRect = {startX, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
 	DrawTexturePro(back, {0, 0, (float)back.width, (float)back.height}, backRect, {0, 0}, 0.0f, WHITE);

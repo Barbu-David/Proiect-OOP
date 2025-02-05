@@ -5,7 +5,13 @@
 #include <vector>
 #include <functional>
 
-	std::vector<Exercise*> bubbleSort(std::vector<Exercise*>& exercises, std::function<bool(Exercise*, Exercise*)> comparator);
-	void handleKeyPressAndSort(std::vector<Exercise*>& exercises);
+
+	class DisplayHelper {
+		public:
+			static std::vector<Exercise*> bubbleSort(std::vector<Exercise*>& exercises, std::function<bool(Exercise*, Exercise*)> comparator);
+			static void handleKeyPressAndSort(std::vector<Exercise*>& exercises);
+			static std::string to_string_with_precision(double value, int precision);
+			static void GetTextInput(std::string &buffer, int maxLength);
+};
 
 #endif
