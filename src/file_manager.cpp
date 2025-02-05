@@ -35,7 +35,6 @@ FileManager::FileManager(const char* exercises_directory, const char* w_director
 
 }
 
-
 //Reading
 Exercise* FileManager::exercise_from_json(json j) 
 {
@@ -56,7 +55,7 @@ Exercise* FileManager::exercise_from_json(json j)
 		exercise = new Running(name, description, photo, intensity_factor);        
 
 	}
-	else if(type==ExerciseType::Calisthenics || type==ExerciseType::Weight) {
+	else {
 		std::string muscle_group = j["muscle_group"].get<std::string>();
 		double calories_per_rep = j["calories_per_rep"].get<double>();
 		if(type==ExerciseType::Calisthenics)  exercise = new Calisthenics(name, description, photo, calories_per_rep, muscle_group);    
@@ -67,8 +66,6 @@ Exercise* FileManager::exercise_from_json(json j)
 
 	return exercise;
 }
-
-
 
 Workout* FileManager::workout_from_json(json workout_json) {
 
@@ -82,38 +79,35 @@ Workout* FileManager::workout_from_json(json workout_json) {
 
 		Exercise* new_exercise = nullptr;
 
-		for (Exercise* exercise : exercise_vector) {
-			if (exercise->get_name() == name) {
-				ExerciseType type=exercise->get_type();
-				switch(type) {
-					case ExerciseType::Calisthenics: {
-										 int max_repetitions=j["max_repetitions"].get<int>();
-										 int max_sets=j["max_sets"].get<int>();
-										 new_exercise = new Calisthenics(*dynamic_cast<Calisthenics*>(exercise), max_repetitions, max_sets);	
-										 break;
-									 }
+		for (Exercise* exercise : exercise_vector) if (exercise->get_name() == name) {
 
-					case ExerciseType::Weight: {
-									   int max_repetitions=j["max_repetitions"].get<int>();
-									   int max_sets=j["max_sets"].get<int>();
-									   double weight=j["weight"].get<double>();
-									   new_exercise = new Weight(*dynamic_cast<Weight*>(exercise),max_repetitions, max_sets, weight);
+			ExerciseType type=exercise->get_type();
 
-									   break;
-								   }
+			if(type==ExerciseType::Running) {
 
-					case ExerciseType::Running: {
-									    double max_distance=j["max_distance"].get<double>();
-									    double time=j["time"].get<double>();
-									    new_exercise = new Running(*dynamic_cast<Running*>(exercise), max_distance, time);
-									    break;
-								    }
-				}
-				if(new_exercise) new_exercises.push_back(new_exercise);
-				break;
+				double max_distance=j["max_distance"].get<double>();
+				double time=j["time"].get<double>();
+				new_exercise = new Running(*dynamic_cast<Running*>(exercise), max_distance, time);
+
 			}
+			else {
+				int max_repetitions=j["max_repetitions"].get<int>();
+				int max_sets=j["max_sets"].get<int>();
+
+				if(type==ExerciseType::Weight) {
+					double weight=j["weight"].get<double>();
+					new_exercise = new Weight(*dynamic_cast<Weight*>(exercise),max_repetitions, max_sets, weight);
+
+
+				}
+				else new_exercise = new Calisthenics(*dynamic_cast<Calisthenics*>(exercise), max_repetitions, max_sets);	
+			}
+
+			if(new_exercise) new_exercises.push_back(new_exercise);
+			break;
 		}
 	}
+
 	return new Workout(workout_name, workout_description, new_exercises);
 }
 
@@ -127,18 +121,14 @@ User* FileManager::user_from_json(json user_json) {
 		std::string workout_name_str = workout_name.get<std::string>();
 
 		Workout* matched_workout = nullptr;
-		for (Workout* workout : workout_vector) {
-			if (workout->get_name() == workout_name_str) {
-				matched_workout = workout;
-				break;
-			}
+		for (Workout* workout : workout_vector) if (workout->get_name() == workout_name_str) {
+			matched_workout = workout;
+			break;
 		}
 
-		if (matched_workout) {
-			new_user->get_workout_vector()->push_back(new Workout(*matched_workout));
-		} else {
-			std::cerr << "Workout not found: " << workout_name_str << " for user: " << user_name << std::endl;
-		}
+		if (matched_workout) new_user->get_workout_vector()->push_back(new Workout(*matched_workout));
+		else std::cerr << "Workout not found: " << workout_name_str << " for user: " << user_name << std::endl;
+
 	}
 
 	return new_user;
@@ -158,10 +148,7 @@ void FileManager::add_user(const std::string& username, double user_kgs) {
 	if (user_file.is_open()) {
 		user_file << user_json.dump(4); 
 		user_file.close();
-	} else {
-		std::cerr << "Error creating user file: " << file_path << std::endl;
-		return;
-	}
+	} 
 
 	std::ifstream read_file(file_path);
 	if (read_file.is_open()) {
@@ -170,14 +157,10 @@ void FileManager::add_user(const std::string& username, double user_kgs) {
 		read_file.close();
 
 		User* new_user = user_from_json(read_user_json);
-		if (new_user) {
-			user_vector.push_back(new_user);
-		} else {
-			std::cerr << "Error reading user from JSON file: " << file_path << std::endl;
-		}
-	} else {
-		std::cerr << "Error opening user file for reading: " << file_path << std::endl;
-	}
+		if (new_user) user_vector.push_back(new_user);
+		else std::cerr << "Error reading user from JSON file: " << file_path << std::endl;
+	} 
+	else std::cerr << "Error opening user file for reading: " << file_path << std::endl;
 }
 
 
@@ -189,9 +172,6 @@ void FileManager::add_workout_to_user(const std::string& username, const std::st
 			return user->get_name() == username;
 			});
 
-	if (user_it == user_vector.end()) {
-		throw std::runtime_error("User not found: " + username);
-	}
 
 	User* user = *user_it;
 
@@ -199,35 +179,23 @@ void FileManager::add_workout_to_user(const std::string& username, const std::st
 			return workout->get_name() == workout_name;
 			});
 
-	if (workout_it == workout_vector.end()) {
-		throw std::runtime_error("Workout not found: " + workout_name);
-	}
 
 	Workout* workout = *workout_it;
 
 	user->get_workout_vector()->push_back(new Workout(*workout));
 
 	std::ifstream input_file(user_json_path);
-	if (!input_file.is_open()) {
-		throw std::runtime_error("Failed to open JSON file: " + user_json_path);
-	}
 
 	json user_json;
 	input_file >> user_json;
 	input_file.close();
 
-	if (!user_json.contains("workouts") || !user_json["workouts"].is_array()) {
-		throw std::runtime_error("\"workouts\" field is missing or is not an array in the JSON file.");
-	}
 
 	if (std::find(user_json["workouts"].begin(), user_json["workouts"].end(), workout_name) == user_json["workouts"].end()) {
 		user_json["workouts"].push_back(workout_name);
 	}
 
 	std::ofstream output_file(user_json_path);
-	if (!output_file.is_open()) {
-		throw std::runtime_error("Failed to write to JSON file: " + user_json_path);
-	}
 
 	output_file << user_json.dump(4);
 	output_file.close();
