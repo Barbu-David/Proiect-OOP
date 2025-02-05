@@ -152,41 +152,7 @@ void Display::RenderExerciseList() {
 
 		DrawTextEx(GetFontDefault(), exercise->get_description().c_str(), {textStartX, currentY + lineSpacing}, 16, 1, DARKGRAY);
 
-		ExerciseType type = exercise->get_type();
-		std::string progressDetails;
-
-		if (type == ExerciseType::Calisthenics) {
-			auto* calisthenics = dynamic_cast<Calisthenics*>(exercise);
-			if (calisthenics) {
-				progressDetails = "Reps: " + std::to_string(calisthenics->get_repetitons()) + "/" + std::to_string(calisthenics->get_max_repetitions()) + 
-					", Sets: " + std::to_string(calisthenics->get_sets()) + "/" + std::to_string(calisthenics->get_max_sets()) +
-					", Muscle Group: " + calisthenics->get_muscle_group();
-
-				}
-			 else progressDetails="Error";	
-		}
-		else if (type==ExerciseType::Weight) {
-
-			auto* weight = dynamic_cast<Weight*>(exercise);
-			if (weight) {
-				progressDetails = "Reps: " + std::to_string(weight->get_repetitons()) + "/" + std::to_string(weight->get_max_repetitions()) + 
-					", Sets: " + std::to_string(weight->get_sets()) + "/" + std::to_string(weight->get_max_sets()) +
-					", Muscle Group: " + weight->get_muscle_group();
-
-				progressDetails=progressDetails + "Selected weight: KG: " + helper.to_string_with_precision(weight->get_weight(),1);
-			}
-			else progressDetails="Error";	
-
-		}
-		else if(type==ExerciseType::Running) {
-			auto* running = dynamic_cast<Running*>(exercise);
-			if (running) {
-				progressDetails = "Distance:" + helper.to_string_with_precision(running->get_distance(), 2) + "/" + helper.to_string_with_precision(running->get_max_distance(), 2) + " km" +
-					", Time: " + helper.to_string_with_precision(running->get_time(), 2) + " m" +
-					", Intensity Factor: " + helper.to_string_with_precision(running->get_intensity_factor(), 1);
-			} else progressDetails="Error";	
-
-		}
+		std::string progressDetails=helper.getProgressDetails(exercise);
 
 		DrawTextEx(GetFontDefault(), progressDetails.c_str(), {textStartX, currentY + 2 * lineSpacing}, 16, 1, BLACK);
 		std::string caloriesDetails = "Calories burned: " + helper.to_string_with_precision(exercise->calculate_calories(90),1) + "/" + helper.to_string_with_precision(exercise->calculate_calories_max(90), 1);

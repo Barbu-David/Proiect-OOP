@@ -66,3 +66,29 @@ void DisplayHelper::GetTextInput(std::string &buffer, int maxLength) {
                 buffer.pop_back();
         }
 }
+
+std::string DisplayHelper::getProgressDetails (Exercise* exercise)
+{
+	std::string progressDetails="error";
+	
+	ExerciseType type=exercise->get_type();
+	
+	if (type == ExerciseType::Calisthenics || type==ExerciseType::Weight) {
+		auto* calisthenics = dynamic_cast<Calisthenics*>(exercise);
+		progressDetails = "Reps: " + std::to_string(calisthenics->get_repetitons()) + "/" + std::to_string(calisthenics->get_max_repetitions()) +
+			", Sets: " + std::to_string(calisthenics->get_sets()) + "/" + std::to_string(calisthenics->get_max_sets()) +
+			", Muscle Group: " + calisthenics->get_muscle_group();
+
+		if(type==ExerciseType::Weight) progressDetails=progressDetails + "Selected weight: KG: " + to_string_with_precision(dynamic_cast<Weight*>(calisthenics)->get_weight(),1);
+	}
+
+
+	else if(type==ExerciseType::Running) {
+		auto* running = dynamic_cast<Running*>(exercise);
+		progressDetails = "Distance:" + to_string_with_precision(running->get_distance(), 2) + "/" + to_string_with_precision(running->get_max_distance(), 2) + " km" +
+			", Time: " + to_string_with_precision(running->get_time(), 2) + " m" +
+			", Intensity Factor: " + to_string_with_precision(running->get_intensity_factor(), 1);
+
+	}
+	return progressDetails;
+}

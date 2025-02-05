@@ -12,6 +12,7 @@
 			static void handleKeyPressAndSort(std::vector<Exercise*>& exercises);
 			static std::string to_string_with_precision(double value, int precision);
 			static void GetTextInput(std::string &buffer, int maxLength);
+			static std::string getProgressDetails (Exercise* exercise);
 };
 
 #endif
