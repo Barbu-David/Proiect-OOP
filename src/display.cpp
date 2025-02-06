@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <cstring>
+#include "gui_constants.h"
 
 Display::Display(){
 
@@ -50,15 +51,13 @@ void Display::DrawBackTexture(bool& flag) {
 
 void Display::DrawAddButton(bool& flag, std::string text, float currentY ) {
 
-	float boxPadding=10, boxHeight=60;
+	float boxHeight=60;
         Rectangle addRect = {0, currentY, float(GetScreenWidth()), boxHeight};
 
         DrawRectangleRec(addRect, LIGHTGRAY);
         DrawRectangleLinesEx(addRect, 2, DARKGRAY);
 
-        float addTextStartX = boxPadding;
-        float addTextStartY = currentY + boxPadding;
-	DrawTextEx(GetFontDefault(), text.c_str(), {addTextStartX, addTextStartY}, 24, 2, BLACK);
+	DrawTextEx(GetFontDefault(), text.c_str(), {BOX_PADDING, BOX_PADDING + currentY}, MEDIUM_FONT, TEXT_SPACING, BLACK);
 
 	if (CheckCollisionPointRec(GetMousePosition(), addRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) 
 		flag=true;  
@@ -67,43 +66,39 @@ void Display::DrawAddButton(bool& flag, std::string text, float currentY ) {
 
 void Display::RenderWorkoutList() {
 
-	double kg_param=current_user->get_kg();	
-	std::string username=current_user->get_name();
-	std::vector<Workout*>* workouts=current_user->get_workout_vector();
-	float currentY = - scrollY; 
-	float boxPadding = 10; 
-	float lineSpacing = 20; 
-	float boxSpacing = 30; 
+	//Constants
+	const float boxSpacing = 30; 
+	const float boxHeight = 60; 
+	const std::string username=current_user->get_name();
+	const double kg_param=current_user->get_kg();	
+	const int precision =1;
 
+	
+	//Variables	
+	float currentY = - scrollY; 
+	std::vector<Workout*>* workouts=current_user->get_workout_vector();
+
+	//Back button texture
 	DrawBackTexture(display_user);
 
-	std::string title = username + "'s workouts  " +  helper.to_string_with_precision(kg_param, 1) + " kgs";
-	DrawTextEx(GetFontDefault(), title.c_str(), {0, currentY}, 28, 2, BLACK);
+	//Title
+	std::string title = username + "'s workouts  " +  helper.to_string_with_precision(kg_param, precision) + " kgs";
+	DrawTextEx(GetFontDefault(), title.c_str(), {0, currentY}, BIG_FONT, TEXT_SPACING, BLACK);
 	currentY += 50; 
 
-	float boxHeight = 2 * lineSpacing + boxPadding * 2; 
-
+	//Draw each workout box
 	for (const auto& workout : *workouts) {
-		if (!workout) continue; 
-
 		Rectangle workoutRect = {0, currentY, float(GetScreenWidth()), boxHeight};
-
 		DrawRectangleRec(workoutRect, LIGHTGRAY);
+		
 		DrawRectangleLinesEx(workoutRect, 2, DARKGRAY);
+		DrawTextEx(GetFontDefault(), workout->get_name().c_str(), {BOX_PADDING, currentY + BOX_PADDING}, BIG_FONT, TEXT_SPACING, BLACK);
+		DrawTextEx(GetFontDefault(), workout->get_description().c_str(), {BOX_PADDING, currentY + BOX_PADDING + LINE_SPACING}, MEDIUM_FONT, TEXT_SPACING, DARKGRAY);
 
-		float textStartX =boxPadding;
-		float textStartY = currentY + boxPadding;
-		DrawTextEx(GetFontDefault(), workout->get_name().c_str(), {textStartX, textStartY}, 24, 2, BLACK);
-
-		DrawTextEx(GetFontDefault(), workout->get_description().c_str(), {textStartX, textStartY + lineSpacing}, 20, 1, DARKGRAY);
-
-		if (CheckCollisionPointRec(GetMousePosition(), workoutRect)) {
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+		if (CheckCollisionPointRec(GetMousePosition(), workoutRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { 
 				display_workout = false; 
 				current_workout = workout;
-			}
 		}
-
 		currentY += boxHeight + boxSpacing;
 	}
 
@@ -119,11 +114,9 @@ void Display::RenderExerciseList() {
 	float currentY = - scrollY; 
 	float textureWidth = 50; 
 	float textureHeight = 50; 
-	float boxPadding = 10; 
-	float lineSpacing = 20; 
 
 
-	DrawTextEx(GetFontDefault(), workout_name.c_str(), {0, currentY}, 28, 2, BLACK);
+	DrawTextEx(GetFontDefault(), workout_name.c_str(), {0, currentY}, BIG_FONT, TEXT_SPACING, BLACK);
 	currentY += 40; 
 
 
@@ -146,30 +139,30 @@ void Display::RenderExerciseList() {
 				WHITE 
 			      );
 
-		float textStartX = texturePosX + textureWidth + boxPadding;
+		float textStartX = texturePosX + textureWidth + BOX_PADDING;
 
-		DrawTextEx(GetFontDefault(), exercise->get_name().c_str(), {textStartX, currentY}, 24, 2, BLACK);
+		DrawTextEx(GetFontDefault(), exercise->get_name().c_str(), {textStartX, currentY}, MEDIUM_FONT, TEXT_SPACING, BLACK);
 
-		DrawTextEx(GetFontDefault(), exercise->get_description().c_str(), {textStartX, currentY + lineSpacing}, 16, 1, DARKGRAY);
+		DrawTextEx(GetFontDefault(), exercise->get_description().c_str(), {textStartX, currentY + LINE_SPACING}, SMALL_FONT, TEXT_SPACING, DARKGRAY);
 
 		std::string progressDetails=helper.getProgressDetails(exercise);
 
-		DrawTextEx(GetFontDefault(), progressDetails.c_str(), {textStartX, currentY + 2 * lineSpacing}, 16, 1, BLACK);
-		std::string caloriesDetails = "Calories burned: " + helper.to_string_with_precision(exercise->calculate_calories(90),1) + "/" + helper.to_string_with_precision(exercise->calculate_calories_max(90), 1);
-		DrawTextEx(GetFontDefault(), caloriesDetails.c_str(), {textStartX, currentY + 3 * lineSpacing}, 16, 1, DARKGRAY);
+		DrawTextEx(GetFontDefault(), progressDetails.c_str(), {textStartX, currentY + 2 * LINE_SPACING}, SMALL_FONT, TEXT_SPACING, BLACK);
+		std::string caloriesDetails = "Calories burned: " + helper.to_string_with_precision(exercise->calculate_calories(current_user->get_kg()),1) + "/" + helper.to_string_with_precision(exercise->calculate_calories_max(current_user->get_kg()), 1);
+		DrawTextEx(GetFontDefault(), caloriesDetails.c_str(), {textStartX, currentY + 3 * LINE_SPACING}, SMALL_FONT, TEXT_SPACING, DARKGRAY);
 
 		double progress = exercise->get_progress();
 		float barWidth = 200;
 		float barHeight = 20;
 		float filledWidth = static_cast<int>(barWidth * progress);
 
-		DrawRectangle(textStartX, currentY + 4 * lineSpacing, barWidth, barHeight, LIGHTGRAY);
-		DrawRectangle(textStartX, currentY + 4 * lineSpacing, filledWidth, barHeight, GREEN);
-		DrawRectangleLines(textStartX, currentY + 4 * lineSpacing, barWidth, barHeight, BLACK);
+		DrawRectangle(textStartX, currentY + 4 * LINE_SPACING, barWidth, barHeight, LIGHTGRAY);
+		DrawRectangle(textStartX, currentY + 4 * LINE_SPACING, filledWidth, barHeight, GREEN);
+		DrawRectangleLines(textStartX, currentY + 4 * LINE_SPACING, barWidth, barHeight, BLACK);
 
 
 		float plusPosX = textStartX + barWidth + 10; 
-		float plusPosY = currentY + 4 * lineSpacing;  
+		float plusPosY = currentY + 4 * LINE_SPACING;  
 
 		Rectangle plusRect = {plusPosX, plusPosY, textureWidth * 0.5f, textureHeight * 0.5f};
 		DrawTexturePro(
@@ -187,21 +180,21 @@ void Display::RenderExerciseList() {
 			}
 		}
 
-		currentY += textureHeight + lineSpacing + 80;
+		currentY += textureHeight + LINE_SPACING + 80;
 	}
 }
+
+
 
 void Display::RenderUserList() {
 
 	std::vector<User*> users=fm->get_user_vector();
 
 	float currentY =  - scrollY; 
-	float boxPadding = 10.0f;
-	float lineSpacing = 20.0f;
 	float boxHeight = 60.0f; 
 
 	std::string title = "Select user:";
-	DrawTextEx(GetFontDefault(), title.c_str(), {0, currentY}, 28, 2, BLACK);
+	DrawTextEx(GetFontDefault(), title.c_str(), {0, currentY}, BIG_FONT, TEXT_SPACING, BLACK);
 	currentY += 50; 
 
 	for (const auto& user : users) {
@@ -212,12 +205,10 @@ void Display::RenderUserList() {
 		DrawRectangleRec(userRect, LIGHTGRAY);
 		DrawRectangleLinesEx(userRect, 2, DARKGRAY);
 
-		float textStartX = boxPadding;
-		float textStartY = currentY + boxPadding;
-		DrawTextEx(GetFontDefault(), user->get_name().c_str(), {textStartX, textStartY}, 24, 2, BLACK);
+		DrawTextEx(GetFontDefault(), user->get_name().c_str(), {BOX_PADDING, currentY + BOX_PADDING}, MEDIUM_FONT, TEXT_SPACING, BLACK);
 
 		std::string weightText = helper.to_string_with_precision(user->get_kg(), 1) + " kg";
-		DrawTextEx(GetFontDefault(), weightText.c_str(), {textStartX, textStartY + lineSpacing}, 20, 1, DARKGRAY);
+		DrawTextEx(GetFontDefault(), weightText.c_str(), {BOX_PADDING, currentY + LINE_SPACING + BOX_PADDING}, MEDIUM_FONT, TEXT_SPACING, DARKGRAY);
 
 		if (CheckCollisionPointRec(GetMousePosition(), userRect)) {
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -256,25 +247,24 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 	float startY = 100;
 	float boxWidth = GetScreenWidth() - startX * 2;
 	float boxHeight = 40;
-	float padding = 10;
 
-	Rectangle outerBackgroundRect = {startX - 10, startY - 10, boxWidth + 20, (boxHeight + padding * 2) * 3 + 20};
+	Rectangle outerBackgroundRect = {startX - 10, startY - 10, boxWidth + 20, (boxHeight + BOX_PADDING * 2) * 3 + 20};
 	DrawRectangleRec(outerBackgroundRect, LIGHTGRAY);  // Fill the background
 
 	Rectangle usernameRect = {startX, startY, boxWidth, boxHeight};
 	DrawRectangleRec(usernameRect, usernameActive ? DARKGRAY : RAYWHITE);  // Highlight if active
 	DrawRectangleLinesEx(usernameRect, 2, DARKGRAY);
-	DrawTextEx(GetFontDefault(), ("Username: " + username).c_str(), {startX + padding, startY + padding}, 24, 2, BLACK);
+	DrawTextEx(GetFontDefault(), ("Username: " + username).c_str(), {startX + BOX_PADDING, startY + BOX_PADDING}, MEDIUM_FONT, TEXT_SPACING, BLACK);
 
 	if (CheckCollisionPointRec(GetMousePosition(), usernameRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		usernameActive = true;
 		weightActive = false;
 	}
 
-	Rectangle weightRect = {startX, startY + boxHeight + padding * 2, boxWidth, boxHeight};
+	Rectangle weightRect = {startX, startY + boxHeight + BOX_PADDING, boxWidth, boxHeight};
 	DrawRectangleRec(weightRect, weightActive ? DARKGRAY : RAYWHITE);  // Highlight if active
 	DrawRectangleLinesEx(weightRect, 2, DARKGRAY);
-	DrawTextEx(GetFontDefault(), ("Weight (kg): " + weightKg).c_str(), {startX + padding, startY + boxHeight + padding * 3}, 24, 2, BLACK);
+	DrawTextEx(GetFontDefault(), ("Weight (kg): " + weightKg).c_str(), {startX + BOX_PADDING, startY + boxHeight + BOX_PADDING_BIG}, MEDIUM_FONT, 2, BLACK);
 
 	if (CheckCollisionPointRec(GetMousePosition(), weightRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		weightActive = true;
@@ -288,7 +278,7 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 		helper.GetTextInput(weightKg, 64);
 	}
 
-	Rectangle backRect = {startX, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
+	Rectangle backRect = {startX, startY + (boxHeight + BOX_PADDING) * 2 + BOX_PADDING_BIG, 100, 40};
 	DrawTexturePro(back, {0, 0, (float)back.width, (float)back.height}, backRect, {0, 0}, 0.0f, WHITE);
 
 	if (CheckCollisionPointRec(GetMousePosition(), backRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {	
@@ -298,7 +288,7 @@ void Display::DrawUserInputBox(std::string &username, std::string &weightKg) {
 		return;
 	}
 
-	Rectangle okRect = {(float)GetScreenWidth() - 150, startY + (boxHeight + padding) * 2 + padding * 2, 100, 40};
+	Rectangle okRect = {(float)GetScreenWidth() - 150, startY + (boxHeight + BOX_PADDING) * 2 + BOX_PADDING_BIG, 100, 40};
 	DrawTexturePro(ok, {0, 0, (float)ok.width, (float)ok.height}, okRect, {0, 0}, 0.0f, WHITE);
 
 	if (CheckCollisionPointRec(GetMousePosition(), okRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -319,20 +309,19 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 	float starty = 100;
 	float boxWidth = float(GetScreenWidth());
 	float boxHeight = 40;
-	float padding = 10;
 
-	Rectangle outerBackgroundRect = {startx - 10, starty - 10, boxWidth + 20, (boxHeight + padding * 2) * 3 + 20};
+	Rectangle outerBackgroundRect = {startx - 10, starty - 10, boxWidth + 20, (boxHeight + BOX_PADDING_BIG) * 3 + 20};
 	DrawRectangleRec(outerBackgroundRect, LIGHTGRAY);  
 
 	Rectangle usernameRect = {startx, starty, boxWidth, boxHeight};
 	DrawRectangleRec(usernameRect, RAYWHITE); 
 	DrawRectangleLinesEx(usernameRect, 2, DARKGRAY);
-	DrawTextEx(GetFontDefault(), ("Workout: " + workoutname).c_str(), {padding, padding}, 24, 2, BLACK);
+	DrawTextEx(GetFontDefault(), ("Workout: " + workoutname).c_str(), {BOX_PADDING, BOX_PADDING}, MEDIUM_FONT, TEXT_SPACING, BLACK);
 
 
 	helper.GetTextInput(workoutname, 64);
 
-	Rectangle backRect = {startx, starty + (boxHeight + padding) * 2 + padding * 2, 100, 40};
+	Rectangle backRect = {startx, starty + (boxHeight + BOX_PADDING) * 2 + BOX_PADDING_BIG, 100, 40};
 	DrawTexturePro(back, {0, 0, (float)back.width, (float)back.height}, backRect, {0, 0}, 0.0f, WHITE);
 
 	if (CheckCollisionPointRec(GetMousePosition(), backRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {	
@@ -341,7 +330,7 @@ void Display::DrawWorkoutInputBox(std::string &workoutname) {
 		return;
 	}
 
-	Rectangle okRect = {(float)GetScreenWidth() - 150, starty + (boxHeight + padding) * 2 + padding * 2, 100, 40};
+	Rectangle okRect = {(float)GetScreenWidth() - 150, starty + (boxHeight + BOX_PADDING) * 2 + BOX_PADDING_BIG, 100, 40};
 	DrawTexturePro(ok, {0, 0, (float)ok.width, (float)ok.height}, okRect, {0, 0}, 0.0f, WHITE);
 
 	if (CheckCollisionPointRec(GetMousePosition(), okRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {

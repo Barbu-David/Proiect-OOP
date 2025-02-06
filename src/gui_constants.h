@@ -1,0 +1,7 @@
+#define BOX_PADDING 10
+#define BOX_PADDING_BIG BOX_PADDING*2
+#define BIG_FONT 28
+#define MEDIUM_FONT 20
+#define SMALL_FONT 16
+#define TEXT_SPACING 2
+#define LINE_SPACING 18
