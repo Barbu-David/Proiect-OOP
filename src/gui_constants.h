@@ -22,3 +22,15 @@
 #define BOX_HEIGHT_SMALL 40
 #define PRECISION 1
 #define LINES_W 2
+#define BUFFER_SIZE 64 
+#define INPUT_BOX_X 40
+#define INPUT_BOX_Y 90
+#define BOX_W 700
+#define BOX_H 200
+#define INPUT_BOX_OFFSET_X 50
+#define INPUT_BOX_OFFSET_Y 100
+#define RECT_W_INPUT 80
+#define RECT_H_INPUT 40
+#define BUTTON_OFFSET_X_1 60
+#define BUTTON_OFFSET_X_2 600
+#define BUTTON_OFFSET_Y 250
