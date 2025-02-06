@@ -19,10 +19,12 @@ class Display {
 		std::string s1, s2;
 
 		Texture2D plus, back, ok;
-
+	
+		Font FONT;
 		bool display_workout, display_user, user_box, workout_box;
 		float scrollY;
-
+		
+		Vector2 MousePosition;
 		void RenderExerciseList();
 		void RenderWorkoutList();
 		void RenderUserList();
@@ -34,6 +36,7 @@ class Display {
 
 		void DrawBackTexture(bool& flag);
 		void DrawAddButton(bool& flag, std::string text, float currentY);
+
 };
 
 
